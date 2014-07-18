@@ -1,0 +1,96 @@
+<html>
+<head>
+<!--Gravity (Festember14 Game) 18 July 2014 1300-->
+</head>	
+
+<style>
+
+*{
+	padding: 0px;
+	margin: 0px;
+}
+
+body{
+	background-color: #000000;
+}
+
+#canvas{
+	background-color: #FFFFFF;
+	border-radius: 20px;
+	border: 5px solid #666666;
+}
+
+</style>
+
+<body>
+
+<canvas id="canvas"></canvas>
+ 
+<script>
+
+var canvas = document.getElementById("canvas");
+var ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth * 0.9;
+canvas.height = window.innerHeight * 0.9;
+canvas.style.position = "absolute";
+canvas.style.left = (window.innerWidth-canvas.width)/2;
+canvas.style.top = (window.innerHeight-canvas.height)/2;
+
+//////////////////
+var gravityX = canvas.width/2;
+var gravityY = canvas.height/2;
+var initialRad = 150;
+var spacing = 150;
+//////////////////
+var entity;
+var entityRad = 10;
+var entityIX = gravityX;
+var entityIY = gravityY - initialRad - entityRad;
+//////////////////
+var currentRad = initialRad;
+//////////////////
+
+function renderBackground() {
+	for(var i=0;i<5;i++) {
+		ctx.beginPath();
+		ctx.arc(gravityX,gravityY,initialRad,0,2*Math.PI);
+		ctx.stroke();
+		ctx.closePath();
+		initialRad += spacing;
+	}
+}
+
+function circleEntity(x,y,r,f,v,a) {
+	this.posX = x;
+	this.posY = y;
+	this.rad = r;
+	this.color = "rgba(0,0,0,1)";
+	this.friction = f;
+	this.v = v;
+	this.a = a;
+}
+
+function entitySpawn() {
+	entity = new circleEntity(entityIX,entityIY,10,0.98,0,0);
+}
+
+function entityRender() {
+	ctx.beginPath();
+	ctx.arc(entity.posX,entity.posY,entity.rad,0,2 * Math.PI);
+	ctx.fill();
+	ctx.closePath();
+}
+
+function gameState() {
+	renderBackground();
+	entitySpawn();
+	entityRender();
+	
+}
+
+window.onload = gameState;
+
+</script>
+</body>
+</html>
