@@ -44,16 +44,29 @@ var initialRad = 150;
 var spacing = 150;
 //////////////////
 var entity;
+var acc = 1;
+var maxSpeed = 5;
 var entityRad = 10;
 var entityIX = gravityX;
 var entityIY = gravityY - initialRad - entityRad;
 //////////////////
 var currentRad = initialRad;
 //////////////////
+var keys = [];
+//////////////////
+
+document.addEventListener("keydown", function (e) {
+    keys[e.keyCode] = true;
+});
+document.addEventListener("keyup", function (e) {
+    keys[e.keyCode] = false;
+});
 
 function renderBackground() {
-	for(var i=0;i<5;i++) {
+	initialRad = 150;
+	for(var i=0;i<2;i++) {
 		ctx.beginPath();
+		ctx.fillStyle="rgba(0,0,0,1)";
 		ctx.arc(gravityX,gravityY,initialRad,0,2*Math.PI);
 		ctx.stroke();
 		ctx.closePath();
@@ -75,21 +88,44 @@ function entitySpawn() {
 	entity = new circleEntity(entityIX,entityIY,10,0.98,0,0);
 }
 
+function entityMove() {
+	if(keys[37]) {
+		if(entity.v > -1*maxSpeed) {
+			entity.v -= acc;
+		}
+	} 
+	if(keys[39]) {
+		if(entity.v < maxSpeed) {
+			entity.v += acc;
+		}
+	}
+
+	entity.v *= entity.friction;
+	entity.a += entity.v;
+	entity.posX = gravityX + (currentRad+entity.rad) * Math.cos(entity.a * Math.PI/180);
+	entity.posY = gravityY + (currentRad+entity.rad) * Math.sin(entity.a * Math.PI/180);
+}
+
 function entityRender() {
 	ctx.beginPath();
+	ctx.fillStyle = entity.color;
 	ctx.arc(entity.posX,entity.posY,entity.rad,0,2 * Math.PI);
 	ctx.fill();
 	ctx.closePath();
 }
 
 function gameState() {
+	ctx.fillStyle="rgba(255,255,255,0.3)";
+	ctx.fillRect(0,0,canvas.width,canvas.height);
 	renderBackground();
-	entitySpawn();
+	entityMove();
 	entityRender();
-	
+	setTimeout(function(){gameState();},17);
 }
 
-window.onload = gameState;
+entitySpawn();
+//entityRender();
+gameState();
 
 </script>
 </body>
