@@ -18,6 +18,20 @@ body{
 	background-color: #FFFFFF;
 	border-radius: 20px;
 	border: 5px solid #666666;
+	display: none;
+}
+
+#temp_canvas{
+	background-color: #FFFFFF;
+	border-radius: 20px;
+	border: 5px solid #666666;
+	display: none;
+}
+
+#focus_canvas{
+	background-color: #FFFFFF;
+	border-radius: 20px;
+	border: 5px solid #666666;
 }
 
 </style>
@@ -25,17 +39,29 @@ body{
 <body>
 
 <canvas id="canvas"></canvas>
+<canvas id="temp_canvas"></canvas>
+<canvas id="focus_canvas"></canvas>
  
 <script>
 
 var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
+var canvas2 = document.getElementById("focus_canvas");
+var ctx2 = canvas2.getContext("2d");
+var canvas3 = document.getElementById("temp_canvas");
+var ctx3 = canvas3.getContext("2d");
 
-canvas.width = window.innerWidth * 0.9;
-canvas.height = window.innerHeight * 0.9;
-canvas.style.position = "absolute";
-canvas.style.left = (window.innerWidth-canvas.width)/2;
-canvas.style.top = (window.innerHeight-canvas.height)/2;
+canvas.width = window.innerWidth * 2;
+canvas.height = window.innerHeight * 2;
+//canvas.style.position = "absolute";
+//canvas.style.left = (window.innerWidth-canvas.width)/2;
+//canvas.style.top = (window.innerHeight-canvas.height)/2;
+
+canvas2.width = window.innerWidth * 0.9;
+canvas2.height = window.innerHeight * 0.9;
+canvas2.style.position = "absolute";
+canvas2.style.left = (window.innerWidth-canvas2.width)/2;
+canvas2.style.top = (window.innerHeight-canvas2.height)/2;
 
 //////////////////
 var gravityX = canvas.width/2;
@@ -94,6 +120,7 @@ function circleEntity(x,y,r,f,v,a) {
 }
 
 function entitySpawn() {
+	ctx2.scale(2,2);
 	entity = new circleEntity(entityIX,entityIY,10,0.98,0,270);
 }
 
@@ -173,6 +200,15 @@ function entityRender() {
 	ctx.closePath();
 }
 
+function gameFocus() {
+	var imageData = ctx.getImageData(entity.posX-canvas2.width/4,entity.posY-canvas2.height/4,canvas2.width/2,canvas2.height/2);
+	ctx3.clearRect(0,0,canvas3.width,canvas3.height);
+	canvas3.width = imageData.width;
+	canvas3.height = imageData.height;
+	ctx3.putImageData(imageData,0,0);
+	ctx2.drawImage(temp_canvas,0,0);
+}
+
 function gameState() {
 	ctx.fillStyle="rgba(255,255,255,0.8)";
 	ctx.fillRect(0,0,canvas.width,canvas.height);
@@ -190,6 +226,7 @@ function gameState() {
 	//entityMoveAngular();
 	entityMoveTranslation();
 	entityRender();
+	gameFocus();
 	setTimeout(function(){gameState();},17);
 }
 
