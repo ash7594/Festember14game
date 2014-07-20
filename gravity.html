@@ -58,13 +58,16 @@ var keys = [];
 
 document.addEventListener("keydown", function (e) {
     keys[e.keyCode] = true;
-    if(e.keyCode == 38 || e.keyCode == 40) {
+    if(e.keyCode == 32) {
     	if(jumpToggle == -1) {
-    		jumpToggle = e.keyCode;
-    	}
+    		jumpToggle = 1;
+    	} else if(jumpToggle == 2) {
+    		jumpToggle = 0;
+    	} 
     }
 });
 document.addEventListener("keyup", function (e) {
+    //console.log(e.keyCode);
     keys[e.keyCode] = false;
 });
 
@@ -94,7 +97,7 @@ function entitySpawn() {
 	entity = new circleEntity(entityIX,entityIY,10,0.98,0,270);
 }
 
-function entityMove() {
+function entityMoveAngular() {
 	if(keys[37]) {
 		if(entity.v > -1*maxSpeed) {
 			entity.v -= acc;
@@ -105,13 +108,13 @@ function entityMove() {
 			entity.v += acc;
 		}
 	}
-	if(jumpToggle == 38) {
+	if(jumpToggle == 1) {
 		if(currentRad < (initialRad + spacing - 2*entity.rad)) {
 			currentRad += 5;
 		} else {
-			jumpToggle = -1;
+			jumpToggle = 2;
 		}
-	} else if(jumpToggle == 40) {
+	} else if(jumpToggle == 0) {
 		if(currentRad > initialRad) {
 			currentRad -= 5;
 		} else {
@@ -125,6 +128,43 @@ function entityMove() {
 	entity.posY = gravityY + (currentRad+entity.rad) * Math.sin(entity.a * Math.PI/180);
 }
 
+function entityMoveTranslation() {
+	if(keys[37]) {
+		if(entity.v > -1*maxSpeed) {
+			entity.v -= acc;
+		}
+	} 
+	if(keys[39]) {
+		if(entity.v < maxSpeed) {
+			entity.v += acc;
+		}
+	}
+	if(jumpToggle == 1) {
+		if(currentRad < (initialRad + spacing - 2*entity.rad)) {
+			currentRad += 5;
+		} else {
+			jumpToggle = 2;
+		}
+	} else if(jumpToggle == 0) {
+		if(currentRad > initialRad) {
+			currentRad -= 5;
+		} else {
+			jumpToggle = -1;
+		}
+	}
+
+	entity.v *= entity.friction;
+	entity.a += entity.v * ((initialRad+entity.rad)/(currentRad+entity.rad));
+	entity.posX = gravityX + (currentRad+entity.rad) * Math.cos(entity.a * Math.PI/180);
+	entity.posY = gravityY + (currentRad+entity.rad) * Math.sin(entity.a * Math.PI/180);
+
+	/*entity.v *= entity.friction;
+	entity.posX += entity.v;
+	entity.a = Math.acos((entity.posX - gravityX)/(currentRad+entity.rad))/Math.PI*180;
+	entity.posY = gravityY + (currentRad+entity.rad) * Math.sin(entity.a * Math.PI/180);
+	*/
+}
+
 function entityRender() {
 	ctx.beginPath();
 	ctx.fillStyle = entity.color;
@@ -134,20 +174,21 @@ function entityRender() {
 }
 
 function gameState() {
-	//ctx.fillStyle="rgba(255,255,255,1)";
-	//ctx.fillRect(0,0,canvas.width,canvas.height);
-	ctx.clearRect(0,0,canvas.width,canvas.height);
+	ctx.fillStyle="rgba(255,255,255,0.8)";
+	ctx.fillRect(0,0,canvas.width,canvas.height);
+	//ctx.clearRect(0,0,canvas.width,canvas.height);
 
-	if(initialRad < 2) {
+	/*if(initialRad < 2) {
 		initialRad += spacing - 2;
 		currentRad += spacing - 2; 
 	} else {
 		initialRad -= 2;
 		currentRad -= 2;
-	}
+	}*/
 
 	renderBackground();
-	entityMove();
+	//entityMoveAngular();
+	entityMoveTranslation();
 	entityRender();
 	setTimeout(function(){gameState();},17);
 }
