@@ -64,7 +64,7 @@ canvas2.style.left = (window.innerWidth-canvas2.width)/2;
 canvas2.style.top = (window.innerHeight-canvas2.height)/2;
 
 //////////////////
-var scaleVal = 2;
+var scaleVal = 2.5;
 var gravityX = canvas.width/2;
 var gravityY = canvas.height/2;
 var initialRad = 150*scaleVal;
@@ -76,12 +76,16 @@ var acc = 0.5;
 var maxSpeed = 2.5;
 var entityRad = 10*scaleVal;
 var entityIX = gravityX;
-var entityIY = gravityY - initialRad - entityRad;
+var entityIY = gravityY;
+//var entityIY = gravityY - initialRad - entityRad;
 //////////////////
 var currentRad = initialRad;
 //////////////////
 var keys = [];
 var numRings = 10;
+//////////////////
+var viewPortX = gravityX;
+var viewPortY = gravityY - initialRad - entityRad;
 //////////////////
 
 document.addEventListener("keydown", function (e) {
@@ -122,7 +126,7 @@ function circleEntity(x,y,r,f,v,a) {
 }
 
 function entitySpawn() {
-	ctx2.scale(2,2);
+	//ctx2.scale(2,2);
 	entity = new circleEntity(entityIX,entityIY,entityRad,0.98,0,270);
 }
 
@@ -226,9 +230,47 @@ function gameFocus2() {
 	ctx2.drawImage(temp_canvas,0,0);
 }
 
-function gameFocus3() {
-	
+function viewPort1() {
+	if(keys[37]) {
+		if(entity.v > -1*maxSpeed) {
+			entity.v -= acc;
+		}
+	} 
+	if(keys[39]) {
+		if(entity.v < maxSpeed) {
+			entity.v += acc;
+		}
+	}
+	if(jumpToggle == 1) {
+		if(currentRad < (initialRad + spacing - 2*entity.rad)) {
+			currentRad += 5*scaleVal;
+		} else {
+			jumpToggle = 2;
+		}
+	} else if(jumpToggle == 0) {
+		if(currentRad > initialRad) {
+			currentRad -= 5*scaleVal;
+		} else {
+			jumpToggle = -1;
+		}
+	}
 
+	entity.v *= entity.friction;
+	entity.a += entity.v * ((initialRad+entity.rad)/(currentRad+entity.rad));
+	viewPortX = gravityX + (currentRad+entity.rad) * Math.cos(entity.a * Math.PI/180);
+	viewPortY = gravityY + (currentRad+entity.rad) * Math.sin(entity.a * Math.PI/180);
+}
+
+function renderBack() {
+	var iniRad = initialRad;
+	for(var i=0;i<numRings;i++) {
+		ctx.beginPath();
+		ctx.fillStyle="rgba(0,0,0,1)";
+		ctx.arc(viewPortX,viewPortY,iniRad,0,2*Math.PI);
+		ctx.stroke();
+		ctx.closePath();
+		iniRad += spacing;
+	}	
 }
 
 function gameState() {
@@ -244,9 +286,11 @@ function gameState() {
 		currentRad -= 2;
 	}*/
 
-	renderBackground();
+	//renderBackground();
 	//entityMoveAngular();
-	entityMoveTranslation();
+	//entityMoveTranslation();
+	viewPort1();
+	renderBack();
 	entityRender();
 	//gameFocus1();
 	//gameFocus2();
