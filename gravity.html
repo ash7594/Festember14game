@@ -18,7 +18,6 @@ body{
 	background-color: #FFFFFF;
 	border-radius: 20px;
 	border: 5px solid #666666;
-	display: none;
 }
 
 #temp_canvas{
@@ -32,6 +31,7 @@ body{
 	background-color: #FFFFFF;
 	border-radius: 20px;
 	border: 5px solid #666666;
+	display: none;
 }
 
 </style>
@@ -51,11 +51,11 @@ var ctx2 = canvas2.getContext("2d");
 var canvas3 = document.getElementById("temp_canvas");
 var ctx3 = canvas3.getContext("2d");
 
-canvas.width = window.innerWidth * 3;
-canvas.height = window.innerHeight * 3;
-//canvas.style.position = "absolute";
-//canvas.style.left = (window.innerWidth-canvas.width)/2;
-//canvas.style.top = (window.innerHeight-canvas.height)/2;
+canvas.width = window.innerWidth * 0.9;
+canvas.height = window.innerHeight * 0.9;
+canvas.style.position = "absolute";
+canvas.style.left = (window.innerWidth-canvas.width)/2;
+canvas.style.top = (window.innerHeight-canvas.height)/2;
 
 canvas2.width = window.innerWidth * 0.9;
 canvas2.height = window.innerHeight * 0.9;
@@ -64,16 +64,17 @@ canvas2.style.left = (window.innerWidth-canvas2.width)/2;
 canvas2.style.top = (window.innerHeight-canvas2.height)/2;
 
 //////////////////
+var scaleVal = 2;
 var gravityX = canvas.width/2;
 var gravityY = canvas.height/2;
-var initialRad = 150;
-var spacing = 100;
+var initialRad = 150*scaleVal;
+var spacing = 100*scaleVal;
 //////////////////
 var entity;
 var jumpToggle = -1;
-var acc = 1;
-var maxSpeed = 5;
-var entityRad = 10;
+var acc = 0.5;
+var maxSpeed = 2.5;
+var entityRad = 10*scaleVal;
 var entityIX = gravityX;
 var entityIY = gravityY - initialRad - entityRad;
 //////////////////
@@ -137,7 +138,7 @@ function entityMoveAngular() {
 		}
 	}
 	if(jumpToggle == 1) {
-		if(currentRad < (initialRad + 5*spacing - 2*entity.rad)) {
+		if(currentRad < (initialRad + spacing - 2*entity.rad)) {
 			currentRad += 5;
 		} else {
 			jumpToggle = 2;
@@ -168,14 +169,14 @@ function entityMoveTranslation() {
 		}
 	}
 	if(jumpToggle == 1) {
-		if(currentRad < (initialRad + 8*spacing - 2*entity.rad)) {
-			currentRad += 5;
+		if(currentRad < (initialRad + spacing - 2*entity.rad)) {
+			currentRad += 5*scaleVal;
 		} else {
 			jumpToggle = 2;
 		}
 	} else if(jumpToggle == 0) {
 		if(currentRad > initialRad) {
-			currentRad -= 5;
+			currentRad -= 5*scaleVal;
 		} else {
 			jumpToggle = -1;
 		}
@@ -222,14 +223,19 @@ function gameFocus2() {
 	canvas3.width = imageData.width;
 	canvas3.height = imageData.height;
 	ctx3.putImageData(imageData,0,0);
-	ctx2.drawImage(temp_canvas,0,0);	
+	ctx2.drawImage(temp_canvas,0,0);
+}
+
+function gameFocus3() {
+
+
 }
 
 function gameState() {
 	//ctx.fillStyle="rgba(255,255,255,0.8)";
 	//ctx.fillRect(0,0,canvas.width,canvas.height);
 	ctx.clearRect(0,0,canvas.width,canvas.height);
-	ctx2.clearRect(0,0,canvas2.width,canvas2.height);
+	//ctx2.clearRect(0,0,canvas2.width,canvas2.height);
 	/*if(initialRad < 2) {
 		initialRad += spacing - 2;
 		currentRad += spacing - 2; 
@@ -243,7 +249,8 @@ function gameState() {
 	entityMoveTranslation();
 	entityRender();
 	//gameFocus1();
-	gameFocus2();
+	//gameFocus2();
+	//gameFocus3();
 	setTimeout(function(){gameState();},17);
 }
 
