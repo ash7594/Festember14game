@@ -20,36 +20,16 @@ body{
 	border: 5px solid #666666;
 }
 
-#temp_canvas{
-	background-color: #FFFFFF;
-	border-radius: 20px;
-	border: 5px solid #666666;
-	display: none;
-}
-
-#focus_canvas{
-	background-color: #FFFFFF;
-	border-radius: 20px;
-	border: 5px solid #666666;
-	display: none;
-}
-
 </style>
 
 <body>
 
 <canvas id="canvas"></canvas>
-<canvas id="temp_canvas"></canvas>
-<canvas id="focus_canvas"></canvas>
  
 <script>
 
 var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
-var canvas2 = document.getElementById("focus_canvas");
-var ctx2 = canvas2.getContext("2d");
-var canvas3 = document.getElementById("temp_canvas");
-var ctx3 = canvas3.getContext("2d");
 
 canvas.width = window.innerWidth * 0.9;
 canvas.height = window.innerHeight * 0.9;
@@ -57,14 +37,8 @@ canvas.style.position = "absolute";
 canvas.style.left = (window.innerWidth-canvas.width)/2;
 canvas.style.top = (window.innerHeight-canvas.height)/2;
 
-canvas2.width = window.innerWidth * 0.9;
-canvas2.height = window.innerHeight * 0.9;
-canvas2.style.position = "absolute";
-canvas2.style.left = (window.innerWidth-canvas2.width)/2;
-canvas2.style.top = (window.innerHeight-canvas2.height)/2;
-
 //////////////////
-var scaleVal = 2.5;
+var scaleVal = 3;
 var gravityX = canvas.width/2;
 var gravityY = canvas.height/2;
 var initialRad = 150*scaleVal;
@@ -127,7 +101,7 @@ function circleEntity(x,y,r,f,v,a) {
 
 function entitySpawn() {
 	//ctx2.scale(2,2);
-	entity = new circleEntity(entityIX,entityIY,entityRad,0.98,0,270);
+	entity = new circleEntity(entityIX,entityIY,entityRad,0.98,0,90);
 }
 
 function entityMoveAngular() {
@@ -291,9 +265,9 @@ function viewPort2() {
 	//viewPortX = gravityX + (currentRad+entity.rad) * Math.cos(entity.a * Math.PI/180);
 	//viewPortY = gravityY + (currentRad+entity.rad) * Math.sin(entity.a * Math.PI/180);
 
-	var x = initialRad;
-	var b =	(currentRad+entity.rad) - x + (canvas.height/2);
-	var a = (currentRad+entity.rad) - x + (canvas.width/2);
+	var x = 200;
+	var b =	(currentRad+entity.rad);// + (canvas.height/2);
+	var a = (currentRad+entity.rad) + x;// + (canvas.width/2);
 	//console.log(a+" "+b+" ");
 	viewPortX = gravityX + a * Math.cos(entity.a * Math.PI / 180);
 	viewPortY = gravityY + b * Math.sin(entity.a * Math.PI / 180);
