@@ -261,6 +261,46 @@ function viewPort1() {
 	viewPortY = gravityY + (currentRad+entity.rad) * Math.sin(entity.a * Math.PI/180);
 }
 
+function viewPort2() {
+	if(keys[37]) {
+		if(entity.v > -1*maxSpeed) {
+			entity.v -= acc;
+		}
+	} 
+	if(keys[39]) {
+		if(entity.v < maxSpeed) {
+			entity.v += acc;
+		}
+	}
+	if(jumpToggle == 1) {
+		if(currentRad < (initialRad + spacing - 2*entity.rad)) {
+			currentRad += 5*scaleVal;
+		} else {
+			jumpToggle = 2;
+		}
+	} else if(jumpToggle == 0) {
+		if(currentRad > initialRad) {
+			currentRad -= 5*scaleVal;
+		} else {
+			jumpToggle = -1;
+		}
+	}
+
+	entity.v *= entity.friction;
+	entity.a += entity.v * ((initialRad+entity.rad)/(currentRad+entity.rad));
+	//viewPortX = gravityX + (currentRad+entity.rad) * Math.cos(entity.a * Math.PI/180);
+	//viewPortY = gravityY + (currentRad+entity.rad) * Math.sin(entity.a * Math.PI/180);
+
+	var x = initialRad;
+	var b =	(currentRad+entity.rad) - x + (canvas.height/2);
+	var a = (currentRad+entity.rad) - x + (canvas.width/2);
+	//console.log(a+" "+b+" ");
+	viewPortX = gravityX + a * Math.cos(entity.a * Math.PI / 180);
+	viewPortY = gravityY + b * Math.sin(entity.a * Math.PI / 180);
+	entity.posX = gravityX + (currentRad+entity.rad-a) * Math.cos((entity.a-180) * Math.PI / 180);
+	entity.posY = gravityY + (currentRad+entity.rad-b) * Math.sin((entity.a-180) * Math.PI / 180);
+}
+
 function renderBack() {
 	var iniRad = initialRad;
 	for(var i=0;i<numRings;i++) {
@@ -289,7 +329,7 @@ function gameState() {
 	//renderBackground();
 	//entityMoveAngular();
 	//entityMoveTranslation();
-	viewPort1();
+	viewPort2();
 	renderBack();
 	entityRender();
 	//gameFocus1();
