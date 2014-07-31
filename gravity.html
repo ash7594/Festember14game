@@ -64,6 +64,7 @@ var viewPortY = gravityY - initialRad - entityRad;
 //////////////////
 
 document.addEventListener("keydown", function (e) {
+    console.log(e.keyCode);
     keys[e.keyCode] = true;
     if(e.keyCode == 32) {
     	if(jumpToggle == -1) {
@@ -237,6 +238,28 @@ function viewPort1() {
 }
 
 function viewPort2() {
+	if(keys[90]) {              /////////// zoom out
+		if(scaleVal>0.5) {
+			currentRad /= scaleVal;
+			scaleVal -= 0.1;
+			currentRad *= scaleVal;
+			initialRad = 150*scaleVal;
+			spacing = 100*scaleVal;
+			entity.rad = 10*scaleVal;
+			entityRad = 10*scaleVal;
+		}
+	}
+	if(keys[88]) {              /////////// zoom in
+		if(scaleVal<3) {
+			currentRad /= scaleVal;
+			scaleVal += 0.1;
+			currentRad *= scaleVal;
+			initialRad = 150*scaleVal;
+			spacing = 100*scaleVal;
+			entity.rad = 10*scaleVal;
+			entityRad = 10*scaleVal;
+		}
+	}
 	if(keys[37]) {
 		if(entity.v > -1*maxSpeed) {
 			entity.v -= acc;
@@ -251,12 +274,14 @@ function viewPort2() {
 		if(currentRad < (initialRad + spacing - 2*entity.rad)) {
 			currentRad += 5*scaleVal;
 		} else {
+			currentRad = (initialRad + spacing - 2*entity.rad);
 			jumpToggle = 2;
 		}
 	} else if(jumpToggle == 0) {
 		if(currentRad > initialRad) {
 			currentRad -= 5*scaleVal;
 		} else {
+			currentRad = initialRad;
 			jumpToggle = -1;
 		}
 	}
