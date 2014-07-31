@@ -56,7 +56,7 @@ var entityIY = gravityY;
 var currentRad = initialRad;
 //////////////////
 var keys = [];
-var numRings = 10;
+var numRings = 3;
 //////////////////
 var viewPortX = gravityX;
 var viewPortY = gravityY - initialRad - entityRad;
@@ -276,14 +276,14 @@ function viewPort2() {
 }
 
 function renderBack() {
-	var iniRad = initialRad;
-	for(var i=0;i<numRings;i++) {
-		ctx.beginPath();
-		ctx.fillStyle="rgba(0,0,0,1)";
-		ctx.arc(viewPortX,viewPortY,iniRad,0,2*Math.PI);
-		ctx.stroke();
-		ctx.closePath();
-		iniRad += spacing;
+	for(var i=initialRad;i<=currentRad+(numRings*spacing);i+=spacing) {
+		if((i+spacing)>=currentRad) {
+			ctx.beginPath();
+			ctx.fillStyle="rgba(0,0,0,1)";
+			ctx.arc(viewPortX,viewPortY,i,0,Math.PI*2);
+			ctx.stroke();
+			ctx.closePath();
+		}
 	}	
 }
 
