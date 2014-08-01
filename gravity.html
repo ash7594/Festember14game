@@ -318,11 +318,11 @@ function renderBack2() {
 	for(var i=initialRad;i<=currentRad+(spacing);i+=spacing) {
 		if((i+spacing)>=currentRad) {
 			ctx.beginPath();
-			//ctx.moveTo(viewPortX+(i)*Math.cos((entity.a-180-visibleRange)*Math.PI/180),viewPortY+(i)*Math.sin((entity.a-180-visibleRange)*Math.PI/180));
+			ctx.moveTo(viewPortX+(i+spacing)*Math.cos((entity.a-180-visibleRange)*Math.PI/180),viewPortY+(i+spacing)*Math.sin((entity.a-180-visibleRange)*Math.PI/180));
 			ctx.arc(viewPortX,viewPortY,i,(entity.a-180-visibleRange)*Math.PI/180,(entity.a-180+visibleRange)*Math.PI/180,false);
 			//ctx.lineTo(viewPortX+(i+spacing)*Math.cos((entity.a-180-visibleRange)*Math.PI/180),viewPortY+(i+spacing)*Math.sin((entity.a-180-visibleRange)*Math.PI/180));
 			ctx.arc(viewPortX,viewPortY,i+spacing,(entity.a-180+visibleRange)*Math.PI/180,(entity.a-180-visibleRange)*Math.PI/180,true);
-			ctx.lineTo(viewPortX+(i)*Math.cos((entity.a-180-visibleRange)*Math.PI/180),viewPortY+(i)*Math.sin((entity.a-180-visibleRange)*Math.PI/180));
+			//ctx.lineTo(viewPortX+(i)*Math.cos((entity.a-180-visibleRange)*Math.PI/180),viewPortY+(i)*Math.sin((entity.a-180-visibleRange)*Math.PI/180));
 			ctx.closePath();
 			ctx.fill();
 			break;
