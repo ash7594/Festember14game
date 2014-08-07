@@ -38,7 +38,7 @@ canvas.style.left = (window.innerWidth-canvas.width)/2;
 canvas.style.top = (window.innerHeight-canvas.height)/2;
 
 //////////////////
-var visibleRange = 30;
+var visibleRange = 180;
 var scaleVal = 3;
 var gravityX = canvas.width/2;
 var gravityY = canvas.height/2;
@@ -61,6 +61,10 @@ var numRings = 3;
 //////////////////
 var viewPortX = gravityX;
 var viewPortY = gravityY - initialRad - entityRad;
+//////////////////
+var holeAngle = Math.random()*360;
+var holeX = 0;
+var holeY = 0;
 //////////////////
 
 document.addEventListener("keydown", function (e) {
@@ -297,6 +301,8 @@ function viewPort2() {
 	//console.log(a+" "+b+" ");
 	viewPortX = gravityX + a * Math.cos(entity.a * Math.PI / 180);
 	viewPortY = gravityY + b * Math.sin(entity.a * Math.PI / 180);
+	holeX = viewPortX + spacing; 
+	holeY = viewPortY + spacing;
 	entity.posX = gravityX + (currentRad+entity.rad-a) * Math.cos((entity.a-180) * Math.PI / 180);
 	entity.posY = gravityY + (currentRad+entity.rad-b) * Math.sin((entity.a-180) * Math.PI / 180);
 }
@@ -330,6 +336,18 @@ function renderBack2() {
 	}
 }
 
+function createHole() {
+	holeAngle = Math.random()*360;
+}
+
+function renderHole() {
+	ctx.beginPath();
+	ctx.fillStyle = "blue";
+	ctx.arc(holeX,holeY,10,0,2*Math.PI);
+	ctx.fill();
+	ctx.closePath();
+}
+
 function gameState() {
 	//ctx.fillStyle="rgba(255,255,255,0.8)";
 	//ctx.fillRect(0,0,canvas.width,canvas.height);
@@ -349,6 +367,7 @@ function gameState() {
 	viewPort2();
 	renderBack2();
 	entityRender();
+	renderHole();
 	//gameFocus1();
 	//gameFocus2();
 	//gameFocus3();
