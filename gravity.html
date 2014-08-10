@@ -48,7 +48,7 @@ var spacing = 100*scaleVal;
 var entity;
 var jumpToggle = -1;
 var acc = 0.5;
-var maxSpeed = 2.5;
+var maxSpeed = 2;  //2.5
 var entityRad = 10*scaleVal;
 var entityIX = gravityX;
 var entityIY = gravityY;
@@ -67,11 +67,21 @@ var holeX = 0;
 var holeY = 0;
 var holeLoc = initialRad;
 //////////////////
+var levelChange = 0;
+//////////////////
 
 document.addEventListener("keydown", function (e) {
-    console.log(e.keyCode);
+    //console.log(e.keyCode);
     keys[e.keyCode] = true;
-    if(e.keyCode == 32) {
+    //////////
+    //////////
+    if(e.keyCode == 65) {
+    	keys[39] = true;
+    	gameState();
+    }
+    //////////
+    //////////
+    else if(e.keyCode == 32) {
     	if(jumpToggle == -1) {
     		jumpToggle = 1;
     	} else if(jumpToggle == 2) {
@@ -342,11 +352,18 @@ function renderBack2() {
 	//}
 }
 
+function directionChange() {
+	keys[37] = !keys[37];
+	keys[39] = !keys[39];
+	entity.v *= -1;
+}
+
 function nextLevelCheck() {
 	if((holeX>=(entity.posX-entity.rad) && holeX<=(entity.posX+entity.rad)) && (holeY>=(entity.posY-entity.rad) && holeY<=(entity.posY+entity.rad))) {
 		jumpToggle = -1;
-		currentRad = holeLoc + spacing;
-		createHole();
+		levelChange = 1;
+		//currentRad = holeLoc + spacing;
+		//createHole();
 	}
 }
 
@@ -379,11 +396,37 @@ function gameState() {
 	//renderBackground();
 	//entityMoveAngular();
 	//entityMoveTranslation();
-	viewPort2();
-	renderBack2();
-	entityRender();
-	renderHole();
-	nextLevelCheck();
+
+	if(levelChange == 0) {
+		viewPort2();
+		renderBack2();
+		entityRender();
+		renderHole();
+		nextLevelCheck();
+	} else if(levelChange == 1) {
+		if(visibleRange >= 5) {
+			visibleRange -= 2;
+			renderBack2();
+			entityRender();
+			renderHole();
+		} else {
+			levelChange = 2;
+			directionChange();
+			currentRad = holeLoc + spacing;
+			createHole();
+		}
+	} else if(levelChange == 2) {
+		if(visibleRange <= 175) {
+			visibleRange += 2;
+			viewPort2();
+			renderBack2();
+			entityRender();
+			renderHole();
+		} else {
+			visibleRange = 180;
+			levelChange = 0;
+		}
+	}
 	//gameFocus1();
 	//gameFocus2();
 	//gameFocus3();
@@ -392,7 +435,7 @@ function gameState() {
 
 entitySpawn();
 //entityRender();
-gameState();
+//gameState();
 
 </script>
 </body>
