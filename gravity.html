@@ -65,6 +65,7 @@ var viewPortY = gravityY - initialRad - entityRad;
 var holeAngle = Math.random()*360;
 var holeX = 0;
 var holeY = 0;
+var holeLoc = initialRad;
 //////////////////
 
 document.addEventListener("keydown", function (e) {
@@ -245,23 +246,27 @@ function viewPort2() {
 	if(keys[90]) {              /////////// zoom out
 		if(scaleVal>0.5) {
 			currentRad /= scaleVal;
+			holeLoc /= scaleVal;
 			scaleVal -= 0.1;
 			currentRad *= scaleVal;
 			initialRad = 150*scaleVal;
 			spacing = 100*scaleVal;
 			entity.rad = 10*scaleVal;
 			entityRad = 10*scaleVal;
+			holeLoc *= scaleVal;
 		}
 	}
 	if(keys[88]) {              /////////// zoom in
 		if(scaleVal<3) {
 			currentRad /= scaleVal;
+			holeLoc /= scaleVal;
 			scaleVal += 0.1;
 			currentRad *= scaleVal;
 			initialRad = 150*scaleVal;
 			spacing = 100*scaleVal;
 			entity.rad = 10*scaleVal;
 			entityRad = 10*scaleVal;
+			holeLoc *= scaleVal;
 		}
 	}
 	if(keys[37]) {
@@ -275,17 +280,17 @@ function viewPort2() {
 		}
 	}
 	if(jumpToggle == 1) {
-		if(currentRad < (initialRad + spacing - 2*entity.rad)) {
+		if(currentRad < (holeLoc + spacing - 2*entity.rad)) {
 			currentRad += 5*scaleVal;
 		} else {
-			currentRad = (initialRad + spacing - 2*entity.rad);
+			currentRad = (holeLoc + spacing - 2*entity.rad);
 			jumpToggle = 2;
 		}
 	} else if(jumpToggle == 0) {
-		if(currentRad > initialRad) {
+		if(currentRad > holeLoc) {
 			currentRad -= 5*scaleVal;
 		} else {
-			currentRad = initialRad;
+			currentRad = holeLoc;
 			jumpToggle = -1;
 		}
 	}
@@ -301,8 +306,8 @@ function viewPort2() {
 	//console.log(a+" "+b+" ");
 	viewPortX = gravityX + a * Math.cos(entity.a * Math.PI / 180);
 	viewPortY = gravityY + b * Math.sin(entity.a * Math.PI / 180);
-	holeX = viewPortX + (initialRad + spacing)*Math.cos(holeAngle * Math.PI / 180);
-	holeY = viewPortY + (initialRad + spacing)*Math.sin(holeAngle * Math.PI / 180);
+	holeX = viewPortX + (holeLoc + spacing)*Math.cos(holeAngle * Math.PI / 180);
+	holeY = viewPortY + (holeLoc + spacing)*Math.sin(holeAngle * Math.PI / 180);
 	entity.posX = gravityX + (currentRad+entity.rad-a) * Math.cos((entity.a-180) * Math.PI / 180);
 	entity.posY = gravityY + (currentRad+entity.rad-b) * Math.sin((entity.a-180) * Math.PI / 180);
 }
@@ -321,8 +326,9 @@ function renderBack() {
 
 function renderBack2() {
 	ctx.fillStyle="rgba(255,255,255,1)";
-	for(var i=initialRad;i<=currentRad+(spacing);i+=spacing) {
-		if((i+spacing)>=currentRad) {
+	var i = holeLoc;
+	//for(var i=initialRad;i<=currentRad+(spacing);i+=spacing) {
+		//if((i+spacing)>=currentRad) {
 			ctx.beginPath();
 			ctx.moveTo(viewPortX+(i+spacing)*Math.cos((entity.a-180-visibleRange)*Math.PI/180),viewPortY+(i+spacing)*Math.sin((entity.a-180-visibleRange)*Math.PI/180));
 			ctx.arc(viewPortX,viewPortY,i,(entity.a-180-visibleRange)*Math.PI/180,(entity.a-180+visibleRange)*Math.PI/180,false);
@@ -331,13 +337,22 @@ function renderBack2() {
 			//ctx.lineTo(viewPortX+(i)*Math.cos((entity.a-180-visibleRange)*Math.PI/180),viewPortY+(i)*Math.sin((entity.a-180-visibleRange)*Math.PI/180));
 			ctx.closePath();
 			ctx.fill();
-			break;
-		}
+		//	break;
+		//}
+	//}
+}
+
+function nextLevelCheck() {
+	if((holeX>=(entity.posX-entity.rad) && holeX<=(entity.posX+entity.rad)) && (holeY>=(entity.posY-entity.rad) && holeY<=(entity.posY+entity.rad))) {
+		jumpToggle = -1;
+		currentRad = holeLoc + spacing;
+		createHole();
 	}
 }
 
 function createHole() {
 	holeAngle = Math.random()*360;
+	holeLoc = currentRad;
 }
 
 function renderHole() {
@@ -368,6 +383,7 @@ function gameState() {
 	renderBack2();
 	entityRender();
 	renderHole();
+	nextLevelCheck();
 	//gameFocus1();
 	//gameFocus2();
 	//gameFocus3();
