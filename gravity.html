@@ -301,8 +301,8 @@ function viewPort2() {
 	//console.log(a+" "+b+" ");
 	viewPortX = gravityX + a * Math.cos(entity.a * Math.PI / 180);
 	viewPortY = gravityY + b * Math.sin(entity.a * Math.PI / 180);
-	holeX = viewPortX + spacing; 
-	holeY = viewPortY + spacing;
+	holeX = viewPortX + (initialRad + spacing)*Math.cos(holeAngle * Math.PI / 180);
+	holeY = viewPortY + (initialRad + spacing)*Math.sin(holeAngle * Math.PI / 180);
 	entity.posX = gravityX + (currentRad+entity.rad-a) * Math.cos((entity.a-180) * Math.PI / 180);
 	entity.posY = gravityY + (currentRad+entity.rad-b) * Math.sin((entity.a-180) * Math.PI / 180);
 }
@@ -342,7 +342,7 @@ function createHole() {
 
 function renderHole() {
 	ctx.beginPath();
-	ctx.fillStyle = "blue";
+	ctx.fillStyle = "red";
 	ctx.arc(holeX,holeY,10,0,2*Math.PI);
 	ctx.fill();
 	ctx.closePath();
