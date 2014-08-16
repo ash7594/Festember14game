@@ -120,16 +120,28 @@ function circleEntity(x,y,r,f,v,a) {
 }
 
 function spike() {
+	this.orient = parseInt(Math.random() * 2);
 	this.a = Math.random() * 360;
-	this.posX = viewPortX + (holeLoc)*Math.cos(this.a * Math.PI / 180);
-	this.posY = viewPortY + (holeLoc)*Math.sin(this.a * Math.PI / 180);
 	this.off = 5 * ((initialRad+entity.rad)/(currentRad+entity.rad));
-	this.poslX = viewPortX + (holeLoc)*Math.cos((this.a-this.off) * Math.PI / 180);
-	this.poslY = viewPortY + (holeLoc)*Math.sin((this.a-this.off) * Math.PI / 180);
-	this.posrX = viewPortX + (holeLoc)*Math.cos((this.a+this.off) * Math.PI / 180);
-	this.posrY = viewPortY + (holeLoc)*Math.sin((this.a+this.off) * Math.PI / 180);
-	this.tipX = viewPortX + (holeLoc+spacing/2)*Math.cos(this.a * Math.PI / 180);
-	this.tipY = viewPortY + (holeLoc+spacing/2)*Math.sin(this.a * Math.PI / 180);
+	if(this.orient == 0) {
+		this.posX = viewPortX + (holeLoc)*Math.cos(this.a * Math.PI / 180);
+		this.posY = viewPortY + (holeLoc)*Math.sin(this.a * Math.PI / 180);
+		this.poslX = viewPortX + (holeLoc)*Math.cos((this.a-this.off) * Math.PI / 180);
+		this.poslY = viewPortY + (holeLoc)*Math.sin((this.a-this.off) * Math.PI / 180);
+		this.posrX = viewPortX + (holeLoc)*Math.cos((this.a+this.off) * Math.PI / 180);
+		this.posrY = viewPortY + (holeLoc)*Math.sin((this.a+this.off) * Math.PI / 180);
+		this.tipX = viewPortX + (holeLoc+spacing/2)*Math.cos(this.a * Math.PI / 180);
+		this.tipY = viewPortY + (holeLoc+spacing/2)*Math.sin(this.a * Math.PI / 180);
+	} else {
+		this.posX = viewPortX + (holeLoc+spacing+entity.rad)*Math.cos(this.a * Math.PI / 180);
+		this.posY = viewPortY + (holeLoc+spacing+entity.rad)*Math.sin(this.a * Math.PI / 180);
+		this.poslX = viewPortX + (holeLoc+spacing+entity.rad)*Math.cos((this.a-this.off) * Math.PI / 180);
+		this.poslY = viewPortY + (holeLoc+spacing+entity.rad)*Math.sin((this.a-this.off) * Math.PI / 180);
+		this.posrX = viewPortX + (holeLoc+spacing+entity.rad)*Math.cos((this.a+this.off) * Math.PI / 180);
+		this.posrY = viewPortY + (holeLoc+spacing+entity.rad)*Math.sin((this.a+this.off) * Math.PI / 180);
+		this.tipX = viewPortX + (holeLoc+spacing/2)*Math.cos(this.a * Math.PI / 180);
+		this.tipY = viewPortY + (holeLoc+spacing/2)*Math.sin(this.a * Math.PI / 180);
+	}
 }
 
 function entitySpawn() {
@@ -399,15 +411,27 @@ function renderHole() {
 
 function manipSpike() {
 	for(var i=0;i<numSpikes;i++) {
-		spikes[i].posX = viewPortX + (holeLoc)*Math.cos(spikes[i].a * Math.PI / 180);
-		spikes[i].posY = viewPortY + (holeLoc)*Math.sin(spikes[i].a * Math.PI / 180);
-		spikes[i].off = 5 * ((initialRad+entity.rad)/(currentRad+entity.rad));
-		spikes[i].poslX = viewPortX + (holeLoc)*Math.cos((spikes[i].a-spikes[i].off) * Math.PI / 180);
-		spikes[i].poslY = viewPortY + (holeLoc)*Math.sin((spikes[i].a-spikes[i].off) * Math.PI / 180);
-		spikes[i].posrX = viewPortX + (holeLoc)*Math.cos((spikes[i].a+spikes[i].off) * Math.PI / 180);
-		spikes[i].posrY = viewPortY + (holeLoc)*Math.sin((spikes[i].a+spikes[i].off) * Math.PI / 180);
-		spikes[i].tipX = viewPortX + (holeLoc+spacing/2)*Math.cos(spikes[i].a * Math.PI / 180);
-		spikes[i].tipY = viewPortY + (holeLoc+spacing/2)*Math.sin(spikes[i].a * Math.PI / 180);
+		if(spikes[i].orient == 0) {
+			spikes[i].posX = viewPortX + (holeLoc)*Math.cos(spikes[i].a * Math.PI / 180);
+			spikes[i].posY = viewPortY + (holeLoc)*Math.sin(spikes[i].a * Math.PI / 180);
+			spikes[i].off = 5 * ((initialRad+entity.rad)/(currentRad+entity.rad));
+			spikes[i].poslX = viewPortX + (holeLoc)*Math.cos((spikes[i].a-spikes[i].off) * Math.PI / 180);
+			spikes[i].poslY = viewPortY + (holeLoc)*Math.sin((spikes[i].a-spikes[i].off) * Math.PI / 180);
+			spikes[i].posrX = viewPortX + (holeLoc)*Math.cos((spikes[i].a+spikes[i].off) * Math.PI / 180);
+			spikes[i].posrY = viewPortY + (holeLoc)*Math.sin((spikes[i].a+spikes[i].off) * Math.PI / 180);
+			spikes[i].tipX = viewPortX + (holeLoc+spacing/2)*Math.cos(spikes[i].a * Math.PI / 180);
+			spikes[i].tipY = viewPortY + (holeLoc+spacing/2)*Math.sin(spikes[i].a * Math.PI / 180);
+		} else {
+			spikes[i].posX = viewPortX + (holeLoc+spacing+entity.rad)*Math.cos(spikes[i].a * Math.PI / 180);
+			spikes[i].posY = viewPortY + (holeLoc+spacing+entity.rad)*Math.sin(spikes[i].a * Math.PI / 180);
+			spikes[i].off = 5 * ((initialRad+entity.rad)/(currentRad+entity.rad));
+			spikes[i].poslX = viewPortX + (holeLoc+spacing+entity.rad)*Math.cos((spikes[i].a-spikes[i].off) * Math.PI / 180);
+			spikes[i].poslY = viewPortY + (holeLoc+spacing+entity.rad)*Math.sin((spikes[i].a-spikes[i].off) * Math.PI / 180);
+			spikes[i].posrX = viewPortX + (holeLoc+spacing+entity.rad)*Math.cos((spikes[i].a+spikes[i].off) * Math.PI / 180);
+			spikes[i].posrY = viewPortY + (holeLoc+spacing+entity.rad)*Math.sin((spikes[i].a+spikes[i].off) * Math.PI / 180);
+			spikes[i].tipX = viewPortX + (holeLoc+spacing/2)*Math.cos(spikes[i].a * Math.PI / 180);
+			spikes[i].tipY = viewPortY + (holeLoc+spacing/2)*Math.sin(spikes[i].a * Math.PI / 180);
+		}
 	}
 }
 
