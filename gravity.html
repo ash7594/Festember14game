@@ -69,6 +69,8 @@ var holeLoc = initialRad;
 //////////////////
 var levelChange = 0;
 //////////////////
+var spikes = [];
+//////////////////
 
 document.addEventListener("keydown", function (e) {
     //console.log(e.keyCode);
@@ -114,6 +116,19 @@ function circleEntity(x,y,r,f,v,a) {
 	this.friction = f;
 	this.v = v;
 	this.a = a;
+}
+
+function spike() {
+	this.a = Math.random() * 360;
+	this.posX = viewPortX + (holeLoc)*Math.cos(this.a * Math.PI / 180);
+	this.posY = viewPortY + (holeLoc)*Math.sin(this.a * Math.PI / 180);
+	this.off = 5 * ((initialRad+entity.rad)/(currentRad+entity.rad));
+	this.poslX = viewPortX + (holeLoc)*Math.cos((this.a-this.off) * Math.PI / 180);
+	this.poslY = viewPortY + (holeLoc)*Math.sin((this.a-this.off) * Math.PI / 180);
+	this.posrX = viewPortX + (holeLoc)*Math.cos((this.a+this.off) * Math.PI / 180);
+	this.posrY = viewPortY + (holeLoc)*Math.sin((this.a+this.off) * Math.PI / 180);
+	this.tipX = viewPortX + (holeLoc+spacing/2)*Math.cos(this.a * Math.PI / 180);
+	this.tipY = viewPortY + (holeLoc+spacing/2)*Math.sin(this.a * Math.PI / 180);
 }
 
 function entitySpawn() {
@@ -320,6 +335,7 @@ function viewPort2() {
 	holeY = viewPortY + (holeLoc + spacing)*Math.sin(holeAngle * Math.PI / 180);
 	entity.posX = gravityX + (currentRad+entity.rad-a) * Math.cos((entity.a-180) * Math.PI / 180);
 	entity.posY = gravityY + (currentRad+entity.rad-b) * Math.sin((entity.a-180) * Math.PI / 180);
+	manipSpike();
 }
 
 function renderBack() {
@@ -380,6 +396,34 @@ function renderHole() {
 	ctx.closePath();
 }
 
+function manipSpike() {
+	spikes[0].posX = viewPortX + (holeLoc)*Math.cos(spikes[0].a * Math.PI / 180);
+	spikes[0].posY = viewPortY + (holeLoc)*Math.sin(spikes[0].a * Math.PI / 180);
+	spikes[0].off = 5 * ((initialRad+entity.rad)/(currentRad+entity.rad));
+	spikes[0].poslX = viewPortX + (holeLoc)*Math.cos((spikes[0].a-spikes[0].off) * Math.PI / 180);
+	spikes[0].poslY = viewPortY + (holeLoc)*Math.sin((spikes[0].a-spikes[0].off) * Math.PI / 180);
+	spikes[0].posrX = viewPortX + (holeLoc)*Math.cos((spikes[0].a+spikes[0].off) * Math.PI / 180);
+	spikes[0].posrY = viewPortY + (holeLoc)*Math.sin((spikes[0].a+spikes[0].off) * Math.PI / 180);
+	spikes[0].tipX = viewPortX + (holeLoc+spacing/2)*Math.cos(spikes[0].a * Math.PI / 180);
+	spikes[0].tipY = viewPortY + (holeLoc+spacing/2)*Math.sin(spikes[0].a * Math.PI / 180);
+}
+
+function genSpikes() {
+	spikes = [];
+	spikes.push(new spike());
+}
+
+function renderSpike() {
+	ctx.beginPath();
+	ctx.fillStyle = "black";
+	ctx.moveTo(spikes[0].poslX,spikes[0].poslY);
+	ctx.lineTo(spikes[0].tipX,spikes[0].tipY);
+	ctx.lineTo(spikes[0].posrX,spikes[0].posrY);
+	ctx.lineTo(spikes[0].poslX,spikes[0].poslY);
+	ctx.fill();
+	ctx.closePath();
+}
+
 function gameState() {
 	//ctx.fillStyle="rgba(255,255,255,0.8)";
 	//ctx.fillRect(0,0,canvas.width,canvas.height);
@@ -402,6 +446,7 @@ function gameState() {
 		renderBack2();
 		entityRender();
 		renderHole();
+		renderSpike();
 		nextLevelCheck();
 	} else if(levelChange == 1) {
 		if(visibleRange >= 5) {
@@ -409,11 +454,13 @@ function gameState() {
 			renderBack2();
 			entityRender();
 			renderHole();
+			renderSpike();
 		} else {
 			levelChange = 2;
 			directionChange();
 			currentRad = holeLoc + spacing;
 			createHole();
+			genSpikes();
 		}
 	} else if(levelChange == 2) {
 		if(visibleRange <= 175) {
@@ -422,6 +469,7 @@ function gameState() {
 			renderBack2();
 			entityRender();
 			renderHole();
+			renderSpike();
 		} else {
 			visibleRange = 180;
 			levelChange = 0;
@@ -434,6 +482,7 @@ function gameState() {
 }
 
 entitySpawn();
+genSpikes();
 //entityRender();
 //gameState();
 
