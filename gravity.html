@@ -70,6 +70,7 @@ var holeLoc = initialRad;
 var levelChange = 0;
 //////////////////
 var spikes = [];
+var numSpikes = 5;
 //////////////////
 
 document.addEventListener("keydown", function (e) {
@@ -397,31 +398,37 @@ function renderHole() {
 }
 
 function manipSpike() {
-	spikes[0].posX = viewPortX + (holeLoc)*Math.cos(spikes[0].a * Math.PI / 180);
-	spikes[0].posY = viewPortY + (holeLoc)*Math.sin(spikes[0].a * Math.PI / 180);
-	spikes[0].off = 5 * ((initialRad+entity.rad)/(currentRad+entity.rad));
-	spikes[0].poslX = viewPortX + (holeLoc)*Math.cos((spikes[0].a-spikes[0].off) * Math.PI / 180);
-	spikes[0].poslY = viewPortY + (holeLoc)*Math.sin((spikes[0].a-spikes[0].off) * Math.PI / 180);
-	spikes[0].posrX = viewPortX + (holeLoc)*Math.cos((spikes[0].a+spikes[0].off) * Math.PI / 180);
-	spikes[0].posrY = viewPortY + (holeLoc)*Math.sin((spikes[0].a+spikes[0].off) * Math.PI / 180);
-	spikes[0].tipX = viewPortX + (holeLoc+spacing/2)*Math.cos(spikes[0].a * Math.PI / 180);
-	spikes[0].tipY = viewPortY + (holeLoc+spacing/2)*Math.sin(spikes[0].a * Math.PI / 180);
+	for(var i=0;i<numSpikes;i++) {
+		spikes[i].posX = viewPortX + (holeLoc)*Math.cos(spikes[i].a * Math.PI / 180);
+		spikes[i].posY = viewPortY + (holeLoc)*Math.sin(spikes[i].a * Math.PI / 180);
+		spikes[i].off = 5 * ((initialRad+entity.rad)/(currentRad+entity.rad));
+		spikes[i].poslX = viewPortX + (holeLoc)*Math.cos((spikes[i].a-spikes[i].off) * Math.PI / 180);
+		spikes[i].poslY = viewPortY + (holeLoc)*Math.sin((spikes[i].a-spikes[i].off) * Math.PI / 180);
+		spikes[i].posrX = viewPortX + (holeLoc)*Math.cos((spikes[i].a+spikes[i].off) * Math.PI / 180);
+		spikes[i].posrY = viewPortY + (holeLoc)*Math.sin((spikes[i].a+spikes[i].off) * Math.PI / 180);
+		spikes[i].tipX = viewPortX + (holeLoc+spacing/2)*Math.cos(spikes[i].a * Math.PI / 180);
+		spikes[i].tipY = viewPortY + (holeLoc+spacing/2)*Math.sin(spikes[i].a * Math.PI / 180);
+	}
 }
 
 function genSpikes() {
 	spikes = [];
-	spikes.push(new spike());
+	for(var i=0;i<numSpikes;i++)
+		spikes.push(new spike());
 }
 
 function renderSpike() {
-	ctx.beginPath();
 	ctx.fillStyle = "black";
-	ctx.moveTo(spikes[0].poslX,spikes[0].poslY);
-	ctx.lineTo(spikes[0].tipX,spikes[0].tipY);
-	ctx.lineTo(spikes[0].posrX,spikes[0].posrY);
-	ctx.lineTo(spikes[0].poslX,spikes[0].poslY);
-	ctx.fill();
-	ctx.closePath();
+
+	for(var i=0;i<numSpikes;i++) {
+		ctx.beginPath();
+		ctx.moveTo(spikes[i].poslX,spikes[i].poslY);
+		ctx.lineTo(spikes[i].tipX,spikes[i].tipY);
+		ctx.lineTo(spikes[i].posrX,spikes[i].posrY);
+		ctx.lineTo(spikes[i].poslX,spikes[i].poslY);
+		ctx.fill();
+		ctx.closePath();
+	}
 }
 
 function gameState() {
