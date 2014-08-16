@@ -307,14 +307,14 @@ function viewPort2() {
 	}
 	if(jumpToggle == 1) {
 		if(currentRad < (holeLoc + spacing - 2*entity.rad)) {
-			currentRad += 5*scaleVal;
+			currentRad += 10*scaleVal;
 		} else {
 			currentRad = (holeLoc + spacing - 2*entity.rad);
 			jumpToggle = 2;
 		}
 	} else if(jumpToggle == 0) {
 		if(currentRad > holeLoc) {
-			currentRad -= 5*scaleVal;
+			currentRad -= 10*scaleVal;
 		} else {
 			currentRad = holeLoc;
 			jumpToggle = -1;
