@@ -290,7 +290,10 @@ function entityMoveTranslation() {
 
 function entityRender() {
 	ctx.beginPath();
-	ctx.fillStyle = entity.color;
+	//if(!keys[17])
+		ctx.fillStyle = entity.color;
+	//else
+		//ctx.fillStyle = "#444444";
 	ctx.arc(entity.posX,entity.posY,entity.rad,0,2 * Math.PI);
 	ctx.fill();
 	ctx.closePath();
@@ -460,16 +463,20 @@ function directionChange() {
 
 function nextLevelCheck() {
 	if((holeX>=(entity.posX-entity.rad) && holeX<=(entity.posX+entity.rad)) && (holeY>=(entity.posY-entity.rad) && holeY<=(entity.posY+entity.rad))) {
-		jumpToggle = -1;
+		//jumpToggle = -1;
 		levelChange = 1;
 		//currentRad = holeLoc + spacing;
 		//createHole();
 	}
 }
 
+function deathCheck() {
+
+}
+
 function createHole() {
 	holeAngle = Math.random()*360;
-	holeLoc = currentRad;
+	holeLoc += spacing;
 }
 
 function renderHole() {
@@ -513,7 +520,10 @@ function genSpikes() {
 }
 
 function renderSpike() {
-	ctx.fillStyle = "black";
+	//if(!keys[17])
+		ctx.fillStyle = "black";
+	//else
+		//ctx.fillStyle = "#444444";
 
 	for(var i=0;i<numSpikes;i++) {
 		ctx.beginPath();
@@ -545,9 +555,11 @@ function present() {
 		} else {
 			levelChange = 2;
 			directionChange();
-			currentRad = holeLoc + spacing;
+			//currentRad = holeLoc + spacing;
+			currentRad = holeLoc + 2*spacing - 2*entity.rad;
 			createHole();
 			numSpikes += 5;
+			entity.a += 180;
 			genSpikes();
 			screenshots = [];
 		}
@@ -573,7 +585,7 @@ function past() {
 		tempScreen = screenshots[screenshots.length - 1];
 		reviveScreenshot();
 	
-		ctx.fillStyle="rgba(0,0,0,0.3)";
+		ctx.fillStyle="rgba(10,10,10,0.3)";
 		ctx.fillRect(0,0,canvas.width,canvas.height);
 		renderBack2();
 		entityRender();
