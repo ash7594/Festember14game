@@ -72,6 +72,9 @@ var levelChange = 0;
 var spikes = [];
 var numSpikes = 5;
 //////////////////
+var screenshots = [];
+var tempScreen;
+//////////////////
 
 document.addEventListener("keydown", function (e) {
     //console.log(e.keyCode);
@@ -80,7 +83,8 @@ document.addEventListener("keydown", function (e) {
     //////////
     if(e.keyCode == 65) {
     	keys[39] = true;
-    	gameState();
+    	setInterval(gameState,17);
+    	//gameState();
     }
     //////////
     //////////
@@ -143,6 +147,68 @@ function spike() {
 		this.tipX = viewPortX + (holeLoc+spacing/2)*Math.cos(this.a * Math.PI / 180);
 		this.tipY = viewPortY + (holeLoc+spacing/2)*Math.sin(this.a * Math.PI / 180);
 	}
+}
+
+function pastSpike(lx,ly,rx,ry,tx,ty) {
+	this.lx = lx;
+	this.ly = ly;
+	this.rx = rx;
+	this.ry = ry;
+	this.tx = tx;
+	this.ty = ty;
+}
+
+function screenshot() {
+	this.Sspikes = [];
+	for(var i=0;i<numSpikes;i++)
+		this.Sspikes.push(new pastSpike(spikes[i].poslX,spikes[i].poslY,spikes[i].posrX,spikes[i].posrY,spikes[i].tipX,spikes[i].tipY));
+
+	this.SentityPosX = entity.posX;
+	this.SentityPosY = entity.posY;
+	this.SentityRad = entity.rad;
+	this.SentityV = entity.v;
+	this.SentityA = entity.a;
+	
+	this.SholeX = holeX;
+	this.SholeY = holeY;
+	this.SholeLoc = holeLoc;
+	this.SviewPortX = viewPortX;
+	this.SviewPortY = viewPortY;
+	this.SscaleVal = scaleVal; 
+	this.SinitialRad = initialRad;
+	this.Sspacing = spacing;
+	this.SjumpToggle = jumpToggle;
+	this.SentityRad = entityRad;
+	this.ScurrentRad = currentRad;
+}
+
+function reviveScreenshot() {
+	for(var i=0;i<numSpikes;i++) {
+		spikes[i].poslX = tempScreen.Sspikes[i].lx;
+		spikes[i].poslY = tempScreen.Sspikes[i].ly;
+		spikes[i].posrX = tempScreen.Sspikes[i].rx;
+		spikes[i].posrY = tempScreen.Sspikes[i].ry;
+		spikes[i].tipX = tempScreen.Sspikes[i].tx;
+		spikes[i].tipY = tempScreen.Sspikes[i].ty;
+	}	
+	
+	entity.posX = tempScreen.SentityPosX;
+	entity.posY = tempScreen.SentityPosY;
+	entity.rad = tempScreen.SentityRad;
+	entity.v = tempScreen.SentityV;
+	entity.a = tempScreen.SentityA;
+	
+	holeX = tempScreen.SholeX;
+	holeY = tempScreen.SholeY;
+	holeLoc = tempScreen.SholeLoc;
+	viewPortX = tempScreen.SviewPortX;
+	viewPortY = tempScreen.SviewPortY;
+	scaleVal = tempScreen.SscaleVal; 
+	initialRad = tempScreen.SinitialRad;
+	spacing = tempScreen.Sspacing;
+	jumpToggle = tempScreen.SjumpToggle;
+	entityRad = tempScreen.SentityRad;
+	currentRad = tempScreen.ScurrentRad;
 }
 
 function entitySpawn() {
@@ -456,23 +522,8 @@ function renderSpike() {
 	}
 }
 
-function gameState() {
-	//ctx.fillStyle="rgba(255,255,255,0.8)";
-	//ctx.fillRect(0,0,canvas.width,canvas.height);
+function present() {
 	ctx.clearRect(0,0,canvas.width,canvas.height);
-	//ctx2.clearRect(0,0,canvas2.width,canvas2.height);
-	/*if(initialRad < 2) {
-		initialRad += spacing - 2;
-		currentRad += spacing - 2; 
-	} else {
-		initialRad -= 2;
-		currentRad -= 2;
-	}*/
-
-	//renderBackground();
-	//entityMoveAngular();
-	//entityMoveTranslation();
-
 	if(levelChange == 0) {
 		viewPort2();
 		renderBack2();
@@ -492,7 +543,9 @@ function gameState() {
 			directionChange();
 			currentRad = holeLoc + spacing;
 			createHole();
+			numSpikes += 5;
 			genSpikes();
+			screenshots = [];
 		}
 	} else if(levelChange == 2) {
 		if(visibleRange <= 175) {
@@ -507,11 +560,49 @@ function gameState() {
 			levelChange = 0;
 		}
 	}
+	screenshots.push(new screenshot());
+} 
+
+function past() {
+	if(screenshots.length > 0) {
+
+		tempScreen = screenshots[screenshots.length - 1];
+		reviveScreenshot();
+	
+		ctx.fillStyle="rgba(0,0,0,0.1)";
+		ctx.fillRect(0,0,canvas.width,canvas.height);
+		renderBack2();
+		entityRender();
+		renderHole();
+		renderSpike();
+		
+		screenshots.pop();
+	}	
+}
+
+function gameState() {
+	//ctx.fillStyle="rgba(255,255,255,0.8)";
+	//ctx.fillRect(0,0,canvas.width,canvas.height);
+	//ctx2.clearRect(0,0,canvas2.width,canvas2.height);
+	/*if(initialRad < 2) {
+		initialRad += spacing - 2;
+		currentRad += spacing - 2; 
+	} else {
+		initialRad -= 2;
+		currentRad -= 2;
+	}*/
+
+	//renderBackground();
+	//entityMoveAngular();
+	//entityMoveTranslation();
+	if(!keys[17]) present();
+	else past();
 	//gameFocus1();
 	//gameFocus2();
 	//gameFocus3();
-	setTimeout(function(){gameState();},17);
+	//setTimeout(function(){gameState();},34);
 }
+
 
 entitySpawn();
 genSpikes();
