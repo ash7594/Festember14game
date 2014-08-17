@@ -74,6 +74,8 @@ var numSpikes = 5;
 //////////////////
 var screenshots = [];
 var tempScreen;
+var timeDelay = 1;
+var curTime = 1;
 //////////////////
 
 document.addEventListener("keydown", function (e) {
@@ -96,8 +98,10 @@ document.addEventListener("keydown", function (e) {
     	} 
     }
 });
+
 document.addEventListener("keyup", function (e) {
     //console.log(e.keyCode);
+    curTime = 1;
     keys[e.keyCode] = false;
 });
 
@@ -564,12 +568,12 @@ function present() {
 } 
 
 function past() {
-	if(screenshots.length > 0) {
+	if(screenshots.length > 0 && curTime==timeDelay) {
 
 		tempScreen = screenshots[screenshots.length - 1];
 		reviveScreenshot();
 	
-		ctx.fillStyle="rgba(0,0,0,0.1)";
+		ctx.fillStyle="rgba(0,0,0,0.3)";
 		ctx.fillRect(0,0,canvas.width,canvas.height);
 		renderBack2();
 		entityRender();
@@ -577,7 +581,10 @@ function past() {
 		renderSpike();
 		
 		screenshots.pop();
-	}	
+		curTime = 0;
+	} else {
+		curTime++;
+	}
 }
 
 function gameState() {
