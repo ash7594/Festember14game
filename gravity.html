@@ -71,8 +71,8 @@ var levelChange = 0;
 //////////////////
 var spikes = [];
 var numSpikes = 5;
-var minPosSeparation = 40;
-var minArcSeparation = 40;
+var minPosSeparation = 40; //
+var minArcSeparation = 250;
 //////////////////
 var screenshots = [];
 var tempScreen;
@@ -134,7 +134,7 @@ function spike() {
 	if(spikes.length == 0)
 		this.a = 0;
 	else
-		this.a = spikes[spikes.length-1].a + 10;//calcSpikeDistanceAngle();
+		this.a = spikes[spikes.length-1].a + calcSpikeDistanceAngle();
 
 
 	if(this.orient == 0) {
@@ -165,7 +165,7 @@ function calcSpikeDistancePos(x1,y1,x2,y2) {
 }
 
 function calcSpikeDistanceAngle() {
-	return currentRad*(minArcSeparation*Math.PI/180);
+	return (minArcSeparation/(holeLoc+spacing))*180/Math.PI;
 }
 
 function pastSpike(lx,ly,rx,ry,tx,ty) {
@@ -372,6 +372,7 @@ function viewPort1() {
 function viewPort2() {
 	if(keys[90]) {              /////////// zoom out
 		if(scaleVal>0.5) {
+			minArcSeparation /= scaleVal;
 			currentRad /= scaleVal;
 			holeLoc /= scaleVal;
 			scaleVal -= 0.1;
@@ -381,10 +382,12 @@ function viewPort2() {
 			entity.rad = 10*scaleVal;
 			entityRad = 10*scaleVal;
 			holeLoc *= scaleVal;
+			minArcSeparation *= scaleVal;
 		}
 	}
 	if(keys[88]) {              /////////// zoom in
 		if(scaleVal<3) {
+			minArcSeparation /= scaleVal;
 			currentRad /= scaleVal;
 			holeLoc /= scaleVal;
 			scaleVal += 0.1;
@@ -394,6 +397,7 @@ function viewPort2() {
 			entity.rad = 10*scaleVal;
 			entityRad = 10*scaleVal;
 			holeLoc *= scaleVal;
+			minArcSeparation *= scaleVal;
 		}
 	}
 	if(keys[37]) {
