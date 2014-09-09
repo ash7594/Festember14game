@@ -72,7 +72,8 @@ var levelChange = 0;
 var spikes = [];
 var numSpikes = 5;
 var minPosSeparation = 40; //
-var minArcSeparation = 250;
+var minArcSeparation = 200;
+var minSameArcSeparation = 75;
 //////////////////
 var screenshots = [];
 var tempScreen;
@@ -133,8 +134,10 @@ function spike() {
 	this.orient = parseInt(Math.random() * 2);
 	if(spikes.length == 0)
 		this.a = 0;
-	else
-		this.a = spikes[spikes.length-1].a + calcSpikeDistanceAngle();
+	else if(this.orient != spikes[spikes.length-1].orient)
+		this.a = spikes[spikes.length-1].a + calcSpikeSwitchDistanceAngle();
+	else if(this.orient == spikes[spikes.length-1].orient)
+		this.a = spikes[spikes.length-1].a + calcSpikeSameDistanceAngle(this.orient);
 
 
 	if(this.orient == 0) {
@@ -164,8 +167,13 @@ function calcSpikeDistancePos(x1,y1,x2,y2) {
 	return Math.sqrt(Math.pow(x1-x2,2)+Math.pow(y1-y2,2));
 }
 
-function calcSpikeDistanceAngle() {
+function calcSpikeSwitchDistanceAngle() {
 	return (minArcSeparation/(holeLoc))*180/Math.PI;
+}
+
+function calcSpikeSameDistanceAngle(o) {
+	if(o == 0) return (minSameArcSeparation/(holeLoc))*180/Math.PI;
+	else if(o == 1) return (minSameArcSeparation/(holeLoc+spacing))*180/Math.PI;
 }
 
 function pastSpike(lx,ly,rx,ry,tx,ty) {
@@ -372,6 +380,7 @@ function viewPort1() {
 function viewPort2() {
 	if(keys[90]) {              /////////// zoom out
 		if(scaleVal>0.5) {
+			minSameArcSeparation /= scaleVal;
 			minArcSeparation /= scaleVal;
 			currentRad /= scaleVal;
 			holeLoc /= scaleVal;
@@ -383,10 +392,12 @@ function viewPort2() {
 			entityRad = 10*scaleVal;
 			holeLoc *= scaleVal;
 			minArcSeparation *= scaleVal;
+			minSameArcSeparation *= scaleVal;
 		}
 	}
 	if(keys[88]) {              /////////// zoom in
 		if(scaleVal<3) {
+			minSameArcSeparation /= scaleVal;
 			minArcSeparation /= scaleVal;
 			currentRad /= scaleVal;
 			holeLoc /= scaleVal;
@@ -398,6 +409,7 @@ function viewPort2() {
 			entityRad = 10*scaleVal;
 			holeLoc *= scaleVal;
 			minArcSeparation *= scaleVal;
+			minSameArcSeparation *= scaleVal;
 		}
 	}
 	if(keys[37]) {
@@ -537,7 +549,7 @@ function genSpikes() {
 	spikes = [];
 	numSpikes = 0;
 	spikes.push(new spike());
-	while(spikes.length > 0 && spikes[spikes.length-1].a <= 300)
+	while(spikes.length > 0 && (spikes[spikes.length-1].a+calcSpikeSwitchDistanceAngle()) <= 360)
 		spikes.push(new spike());
 	numSpikes = spikes.length;
 }
