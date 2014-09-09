@@ -63,6 +63,7 @@ var viewPortX = gravityX;
 var viewPortY = gravityY - initialRad - entityRad;
 //////////////////
 var holeAngle = Math.random()*360;
+var prevHoleAngle = 0;
 var holeX = 0;
 var holeY = 0;
 var holeLoc = initialRad;
@@ -133,7 +134,7 @@ function circleEntity(x,y,r,f,v,a) {
 function spike() {
 	this.orient = parseInt(Math.random() * 2);
 	if(spikes.length == 0)
-		this.a = 0;
+		this.a = prevHoleAngle;
 	else if(this.orient != spikes[spikes.length-1].orient)
 		this.a = spikes[spikes.length-1].a + calcSpikeSwitchDistanceAngle();
 	else if(this.orient == spikes[spikes.length-1].orient)
@@ -506,6 +507,7 @@ function deathCheck() {
 }
 
 function createHole() {
+	prevHoleAngle = holeAngle;
 	holeAngle = Math.random()*360;
 	holeLoc += spacing;
 }
@@ -549,7 +551,7 @@ function genSpikes() {
 	spikes = [];
 	numSpikes = 0;
 	spikes.push(new spike());
-	while(spikes.length > 0 && (spikes[spikes.length-1].a+calcSpikeSwitchDistanceAngle()) <= 360)
+	while(spikes.length > 0 && (spikes[spikes.length-1].a+calcSpikeSwitchDistanceAngle()) <= (360+prevHoleAngle))
 		spikes.push(new spike());
 	numSpikes = spikes.length;
 }
