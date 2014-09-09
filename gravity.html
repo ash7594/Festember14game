@@ -57,13 +57,14 @@ var entityIY = gravityY;
 var currentRad = initialRad;
 //////////////////
 var keys = [];
+var gameInterval;
 var numRings = 3;
 //////////////////
 var viewPortX = gravityX;
 var viewPortY = gravityY - initialRad - entityRad;
 //////////////////
 var holeAngle = Math.random()*360;
-var prevHoleAngle = 0;
+var prevHoleAngle = 90+180;
 var holeX = 0;
 var holeY = 0;
 var holeLoc = initialRad;
@@ -73,13 +74,16 @@ var levelChange = 0;
 var spikes = [];
 var numSpikes = 5;
 var minPosSeparation = 40; //
-var minArcSeparation = 200;
-var minSameArcSeparation = 75;
+var minArcSeparation = 400;  //200
+var minSameArcSeparation = 150;  //75
 //////////////////
 var screenshots = [];
 var tempScreen;
 var timeDelay = 1;
 var curTime = 1;
+//////////////////
+//Death vars
+var spikeHitIndex = 0;
 //////////////////
 
 document.addEventListener("keydown", function (e) {
@@ -89,7 +93,7 @@ document.addEventListener("keydown", function (e) {
     //////////
     if(e.keyCode == 65) {
     	keys[39] = true;
-    	setInterval(gameState,17);
+    	gameInterval = setInterval(gameState,17);
     	//gameState();
     }
     //////////
@@ -134,7 +138,7 @@ function circleEntity(x,y,r,f,v,a) {
 function spike() {
 	this.orient = parseInt(Math.random() * 2);
 	if(spikes.length == 0)
-		this.a = prevHoleAngle;
+		this.a = prevHoleAngle + calcSpikeSwitchDistanceAngle();
 	else if(this.orient != spikes[spikes.length-1].orient)
 		this.a = spikes[spikes.length-1].a + calcSpikeSwitchDistanceAngle();
 	else if(this.orient == spikes[spikes.length-1].orient)
@@ -503,11 +507,23 @@ function nextLevelCheck() {
 }
 
 function deathCheck() {
+	if(spikeHitIndex >= spikes.length)
+		spikeHitIndex = 0;
+	if((entity.a+180) >= (spikes[spikeHitIndex].a-spikes[spikeHitIndex].off) && (entity.a+180) <= (spikes[spikeHitIndex].a+spikes[spikeHitIndex].off)) {
+		if((currentRad<=(holeLoc+spacing/2) && spikes[spikeHitIndex].orient==0) || (currentRad>=(holeLoc+spacing/2) && spikes[spikeHitIndex].orient==1)) {
+			entityDead();
+		}
+	}
+	else if((entity.a+180) > (spikes[spikeHitIndex].a+spikes[spikeHitIndex].off))
+		spikeHitIndex++;
+}
 
+function entityDead() {
+	clearInterval(gameInterval);
+	//alert("yo");
 }
 
 function createHole() {
-	prevHoleAngle = holeAngle;
 	holeAngle = Math.random()*360;
 	holeLoc += spacing;
 }
@@ -548,6 +564,7 @@ function manipSpike() {
 
 function genSpikes() {
 	var tempSpike;
+	spikeHitIndex = 0;
 	spikes = [];
 	numSpikes = 0;
 	spikes.push(new spike());
@@ -581,6 +598,7 @@ function present() {
 		entityRender();
 		renderHole();
 		renderSpike();
+		deathCheck();
 		nextLevelCheck();
 	} else if(levelChange == 1) {
 		if(visibleRange >= 5) {
@@ -597,6 +615,7 @@ function present() {
 			createHole();
 			numSpikes += 5;
 			entity.a += 180;
+			prevHoleAngle = entity.a;
 			genSpikes();
 			screenshots = [];
 		}
@@ -608,6 +627,7 @@ function present() {
 			entityRender();
 			renderHole();
 			renderSpike();
+			deathCheck();
 		} else {
 			visibleRange = 180;
 			levelChange = 0;
