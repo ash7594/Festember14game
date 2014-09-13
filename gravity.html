@@ -90,14 +90,15 @@ var curTime = 1;
 var spikeHitIndex = 0;
 var canSwitchIndex = 0;
 var isDead = 0;
+var startonce = 0;
 //////////////////
 
 document.addEventListener("keydown", function (e) {
     //console.log(e.keyCode);
-    keys[e.keyCode] = true;
     //////////
     //////////
-    if(e.keyCode == 65) {
+    if(e.keyCode == 65 && startonce==0) {
+    	startonce = 1;
     	keys[39] = true;
     	gameInterval = setInterval(gameState,17);
     	//gameState();
@@ -109,7 +110,10 @@ document.addEventListener("keydown", function (e) {
     		jumpToggle = 1;
     	} else if(jumpToggle == 2) {
     		jumpToggle = 0;
-    	} 
+    	}
+    	keys[e.keyCode] = true;
+    } else if(e.keyCode == 88 || e.keyCode == 90 || e.keyCode == 17) {
+    	keys[e.keyCode] = true;
     }
 });
 
