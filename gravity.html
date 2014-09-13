@@ -161,28 +161,40 @@ function spike() {
 		if(spikes.length == 0) {
 			spikeAngTemp = calcSpikeSwitchDistanceAngle();
 			this.a = prevHoleAngle + spikeAngTemp;
+			//if(this.a%360 >= (holeAngle-spikeAngTemp)%360 && this.a%360 <= (holeAngle+spikeAngTemp)%360 && this.orient == 1)
+				//{this.a = prevHoleAngle + 2*spikeAngTemp;spikeTotalAngleCovered += spikeAngTemp;}
 		}
 		else if(this.orient != spikes[spikes.length-1].orient) {
 			spikeAngTemp = calcSpikeSwitchDistanceAngle();
 			this.a = spikes[spikes.length-1].a + spikeAngTemp;
+			//if(this.a%360 >= (holeAngle-spikeAngTemp)%360 && this.a%360 <= (holeAngle+spikeAngTemp)%360 && this.orient == 1)
+				//{this.a = prevHoleAngle + 2*spikeAngTemp;spikeTotalAngleCovered += spikeAngTemp;}
 		}
 		else if(this.orient == spikes[spikes.length-1].orient) {
 			spikeAngTemp = calcSpikeSameDistanceAngle(this.orient);
 			this.a = spikes[spikes.length-1].a + spikeAngTemp;
+			//if(this.a%360 >= (holeAngle-spikeAngTemp)%360 && this.a%360 <= (holeAngle+spikeAngTemp)%360 && this.orient == 1)
+				//{this.a = prevHoleAngle + 2*spikeAngTemp;spikeTotalAngleCovered += spikeAngTemp;}
 		}
 		//this.a %= 360;
 	} else if(entity.v < 0) {
 		if(spikes.length == 0) {
 			spikeAngTemp = calcSpikeSwitchDistanceAngle();
 			this.a = prevHoleAngle - spikeAngTemp;
+			//if(this.a%360 >= (holeAngle-spikeAngTemp)%360 && this.a%360 <= (holeAngle+spikeAngTemp)%360 && this.orient == 1)
+				//{this.a = prevHoleAngle - 2*spikeAngTemp;spikeTotalAngleCovered += spikeAngTemp;}
 		}
 		else if(this.orient != spikes[spikes.length-1].orient) {
 			spikeAngTemp = calcSpikeSwitchDistanceAngle();
 			this.a = spikes[spikes.length-1].a - spikeAngTemp;
+			//if(this.a%360 >= (holeAngle-spikeAngTemp)%360 && this.a%360 <= (holeAngle+spikeAngTemp)%360 && this.orient == 1)
+				//{this.a = prevHoleAngle - 2*spikeAngTemp;spikeTotalAngleCovered += spikeAngTemp;}
 		}
 		else if(this.orient == spikes[spikes.length-1].orient) {
 			spikeAngTemp = calcSpikeSameDistanceAngle(this.orient);
 			this.a = spikes[spikes.length-1].a - spikeAngTemp;
+			//if(this.a%360 >= (holeAngle-spikeAngTemp)%360 && this.a%360 <= (holeAngle+spikeAngTemp)%360 && this.orient == 1)
+				//{this.a = prevHoleAngle - 2*spikeAngTemp;spikeTotalAngleCovered += spikeAngTemp;}
 		}
 		//this.a %= 360;
 		//if(entity.a <= 0) {
