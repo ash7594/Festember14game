@@ -68,6 +68,7 @@ var prevHoleAngle = 90+180;
 var holeX = 0;
 var holeY = 0;
 var holeLoc = initialRad;
+var holeD;
 //////////////////
 var levelChange = 0;
 //////////////////
@@ -137,6 +138,20 @@ function circleEntity(x,y,r,f,v,a) {
 	this.friction = f;
 	this.v = v;
 	this.a = a;
+}
+
+function holeDef() {
+	this.orient = 0;
+	this.a = holeAngle;
+	this.off = 5 * ((initialRad+entity.rad)/(currentRad+spacing+entity.rad));
+	this.posX = viewPortX + (holeLoc+spacing)*Math.cos(this.a * Math.PI / 180);
+	this.posY = viewPortY + (holeLoc+spacing)*Math.sin(this.a * Math.PI / 180);
+	this.poslX = viewPortX + (holeLoc+spacing)*Math.cos((this.a-this.off) * Math.PI / 180);
+	this.poslY = viewPortY + (holeLoc+spacing)*Math.sin((this.a-this.off) * Math.PI / 180);
+	this.posrX = viewPortX + (holeLoc+spacing)*Math.cos((this.a+this.off) * Math.PI / 180);
+	this.posrY = viewPortY + (holeLoc+spacing)*Math.sin((this.a+this.off) * Math.PI / 180);
+	this.tipX = viewPortX + (holeLoc+spacing+spacing/2)*Math.cos(this.a * Math.PI / 180);
+	this.tipY = viewPortY + (holeLoc+spacing+spacing/2)*Math.sin(this.a * Math.PI / 180);
 }
 
 function spike() {
@@ -498,6 +513,7 @@ function viewPort2() {
 	entity.posX = gravityX + (currentRad+entity.rad-a) * Math.cos((entity.a-180) * Math.PI / 180);
 	entity.posY = gravityY + (currentRad+entity.rad-b) * Math.sin((entity.a-180) * Math.PI / 180);
 	manipSpike();
+	manipHole();
 }
 
 function renderBack() {
@@ -599,6 +615,18 @@ function entityDead() {
 function createHole() {
 	holeAngle = Math.random()*360;
 	holeLoc += spacing;
+	holeD = new holeDef();
+}
+
+function renderHole2() {
+	ctx.fillStyle = "#FFFFFF";
+	ctx.beginPath();
+	ctx.moveTo(holeD.poslX,holeD.poslY);
+	ctx.lineTo(holeD.tipX,holeD.tipY);
+	ctx.lineTo(holeD.posrX,holeD.posrY);
+	ctx.lineTo(holeD.poslX,holeD.poslY);
+	ctx.fill();
+	ctx.closePath();
 }
 
 function renderHole() {
@@ -633,6 +661,18 @@ function manipSpike() {
 			spikes[i].tipY = viewPortY + (holeLoc+spacing/2)*Math.sin(spikes[i].a * Math.PI / 180);
 		}
 	}
+}
+
+function manipHole() {
+	holeD.posX = viewPortX + (holeLoc+spacing)*Math.cos(holeD.a * Math.PI / 180);
+	holeD.posY = viewPortY + (holeLoc+spacing)*Math.sin(holeD.a * Math.PI / 180);
+	holeD.off = 5 * ((initialRad+entity.rad)/(currentRad+entity.rad+spacing));
+	holeD.poslX = viewPortX + (holeLoc+spacing)*Math.cos((holeD.a-holeD.off) * Math.PI / 180);
+	holeD.poslY = viewPortY + (holeLoc+spacing)*Math.sin((holeD.a-holeD.off) * Math.PI / 180);
+	holeD.posrX = viewPortX + (holeLoc+spacing)*Math.cos((holeD.a+holeD.off) * Math.PI / 180);
+	holeD.posrY = viewPortY + (holeLoc+spacing)*Math.sin((holeD.a+holeD.off) * Math.PI / 180);
+	holeD.tipX = viewPortX + (holeLoc+spacing+spacing/2)*Math.cos(holeD.a * Math.PI / 180);
+	holeD.tipY = viewPortY + (holeLoc+spacing+spacing/2)*Math.sin(holeD.a * Math.PI / 180);
 }
 
 function genSpikes() {
@@ -712,6 +752,52 @@ function present() {
 	screenshots.push(new screenshot());
 } 
 
+function present2() {
+	ctx.clearRect(0,0,canvas.width,canvas.height);
+	if(levelChange == 0) {
+		viewPort2();
+		renderBack2();
+		entityRender();
+		renderHole2();
+		renderSpike();
+		deathCheck2();
+		nextLevelCheck();
+	} else if(levelChange == 1) {
+		/*if(visibleRange >= 5) {
+			visibleRange -= 2;
+			renderBack2();
+			entityRender();
+			renderHole();
+			renderSpike();
+		} else {*/
+			levelChange = 0;
+			directionChange();
+			//currentRad = holeLoc + spacing;
+			currentRad = holeLoc + 2*spacing - 2*entity.rad;
+			createHole();
+			numSpikes += 5;
+			entity.a = (entity.a+180)%360;
+			prevHoleAngle = entity.a + 180;
+			genSpikes();
+			screenshots = [];
+		//}
+	} else if(levelChange == 2) {
+		if(visibleRange <= 175) {
+			visibleRange += 2;
+			viewPort2();
+			renderBack2();
+			entityRender();
+			renderHole();
+			renderSpike();
+			deathCheck2();
+		} else {
+			visibleRange = 180;
+			levelChange = 0;
+		}
+	}
+	screenshots.push(new screenshot());
+}
+
 function past() {
 	if(screenshots.length > 0 && curTime==timeDelay) {
 
@@ -747,7 +833,7 @@ function gameState() {
 	//renderBackground();
 	//entityMoveAngular();
 	//entityMoveTranslation();
-	if(!keys[17]) present();
+	if(!keys[17]) present2();
 	else past();
 	//gameFocus1();
 	//gameFocus2();
@@ -758,6 +844,7 @@ function gameState() {
 
 entitySpawn();
 genSpikes();
+holeD = new holeDef();
 //entityRender();
 //gameState();
 
