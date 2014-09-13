@@ -39,7 +39,7 @@ canvas.style.top = (window.innerHeight-canvas.height)/2;
 
 //////////////////
 var visibleRange = 180;
-var scaleVal = 3;
+var scaleVal = 2;
 var gravityX = canvas.width/2;
 var gravityY = canvas.height/2;
 var initialRad = 150*scaleVal;
@@ -89,6 +89,7 @@ var curTime = 1;
 //Death vars
 var spikeHitIndex = 0;
 var canSwitchIndex = 0;
+var isDead = 0;
 //////////////////
 
 document.addEventListener("keydown", function (e) {
@@ -630,8 +631,9 @@ function deathCheck2() {
 }
 
 function entityDead() {
-	clearInterval(gameInterval);
-	//alert("yo");
+	//clearInterval(gameInterval);
+	isDead = 1;
+
 }
 
 function createHole() {
@@ -855,8 +857,11 @@ function gameState() {
 	//renderBackground();
 	//entityMoveAngular();
 	//entityMoveTranslation();
-	if(!keys[17]) present2();
-	else past();
+	if(!keys[17] && isDead==0) present2();
+	else if(keys[17]) {
+		isDead = 0;
+		past();
+	}
 	//gameFocus1();
 	//gameFocus2();
 	//gameFocus3();
