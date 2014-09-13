@@ -88,6 +88,7 @@ var timeDelay = 1;
 var curTime = 1;
 //////////////////
 //Death vars
+var spikeCreationValue = 90;
 var spikeHitIndex = 0;
 var canSwitchIndex = 0;
 var isDead = 0;
@@ -175,10 +176,10 @@ function spike() {
 			this.a = spikes[spikes.length-1].a + spikeAngTemp;
 
 			///
-			if(holeCreated == 0) {
+			if(holeCreated == 0 && spikeTotalAngleCovered >= spikeCreationValue) {
 				holeCreated = 1;
 				holeAngle = this.a - spikeAngTemp/2;
-				if(firstlevel == 0) {
+				if(firstlevel != 1) {
 					createHole();
 				}
 			}
@@ -205,10 +206,10 @@ function spike() {
 			this.a = spikes[spikes.length-1].a - spikeAngTemp;
 			
 			////
-			if(holeCreated == 0) {
+			if(holeCreated == 0 && spikeTotalAngleCovered >= spikeCreationValue) {
 				holeCreated = 1;
 				holeAngle = this.a + spikeAngTemp/2;
-				if(firstlevel == 0) {
+				if(firstlevel != 1) {
 					createHole();
 				}
 			}
@@ -832,7 +833,11 @@ function present2() {
 			renderSpike();
 		} else {*/
 			holeCreated = 0;
-			firstlevel = 0;
+			firstlevel--;
+			if(firstlevel <= -1)
+				spikeCreationValue = 180;
+			else if(firstlevel <= -10)
+				spikeCreationValue = 270;
 			levelChange = 0;
 			directionChange();
 			//currentRad = holeLoc + spacing;
