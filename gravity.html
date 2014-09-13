@@ -63,6 +63,7 @@ var numRings = 3;
 var viewPortX = gravityX;
 var viewPortY = gravityY - initialRad - entityRad;
 //////////////////
+var holeCreated = 0;
 var holeAngle = Math.random()*360;
 var prevHoleAngle = 90+180;
 var holeX = 0;
@@ -91,6 +92,7 @@ var spikeHitIndex = 0;
 var canSwitchIndex = 0;
 var isDead = 0;
 var startonce = 0;
+var firstlevel = 1;
 //////////////////
 
 document.addEventListener("keydown", function (e) {
@@ -171,6 +173,16 @@ function spike() {
 		else if(this.orient != spikes[spikes.length-1].orient) {
 			spikeAngTemp = calcSpikeSwitchDistanceAngle();
 			this.a = spikes[spikes.length-1].a + spikeAngTemp;
+
+			///
+			if(holeCreated == 0) {
+				holeCreated = 1;
+				holeAngle = this.a - spikeAngTemp/2;
+				if(firstlevel == 0) {
+					createHole();
+				}
+			}
+			///
 			//if(this.a%360 >= (holeAngle-spikeAngTemp)%360 && this.a%360 <= (holeAngle+spikeAngTemp)%360 && this.orient == 1)
 				//{this.a = prevHoleAngle + 2*spikeAngTemp;spikeTotalAngleCovered += spikeAngTemp;}
 		}
@@ -191,6 +203,16 @@ function spike() {
 		else if(this.orient != spikes[spikes.length-1].orient) {
 			spikeAngTemp = calcSpikeSwitchDistanceAngle();
 			this.a = spikes[spikes.length-1].a - spikeAngTemp;
+			
+			////
+			if(holeCreated == 0) {
+				holeCreated = 1;
+				holeAngle = this.a + spikeAngTemp/2;
+				if(firstlevel == 0) {
+					createHole();
+				}
+			}
+			////
 			//if(this.a%360 >= (holeAngle-spikeAngTemp)%360 && this.a%360 <= (holeAngle+spikeAngTemp)%360 && this.orient == 1)
 				//{this.a = prevHoleAngle - 2*spikeAngTemp;spikeTotalAngleCovered += spikeAngTemp;}
 		}
@@ -407,7 +429,7 @@ function entityMoveTranslation() {
 function entityRender() {
 	ctx.beginPath();
 	//if(!keys[17])
-		ctx.fillStyle = entity.color;
+		ctx.fillStyle = "red";//entity.color;
 	//else
 		//ctx.fillStyle = "#444444";
 	ctx.arc(entity.posX,entity.posY,entity.rad,0,2 * Math.PI);
@@ -653,7 +675,6 @@ function entityDead() {
 }
 
 function createHole() {
-	holeAngle = Math.random()*360;
 	holeLoc += spacing;
 	holeD = new holeDef();
 }
@@ -768,7 +789,7 @@ function present() {
 			directionChange();
 			//currentRad = holeLoc + spacing;
 			currentRad = holeLoc + 2*spacing - 2*entity.rad;
-			createHole();
+			//createHole();
 			numSpikes += 5;
 			entity.a = (entity.a+180)%360;
 			prevHoleAngle = entity.a + 180;
@@ -810,11 +831,13 @@ function present2() {
 			renderHole();
 			renderSpike();
 		} else {*/
+			holeCreated = 0;
+			firstlevel = 0;
 			levelChange = 0;
 			directionChange();
 			//currentRad = holeLoc + spacing;
 			currentRad = holeLoc + 2*spacing - 2*entity.rad;
-			createHole();
+			//createHole();
 			numSpikes += 5;
 			entity.a = (entity.a+180)%360;
 			prevHoleAngle = entity.a + 180;
