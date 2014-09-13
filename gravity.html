@@ -545,7 +545,7 @@ function nextLevelCheck() {
 	}
 }
 
-function deathCheck() {
+function deathCheckwaste() {
 	if(spikeHitIndex >= spikes.length)
 		spikeHitIndex = 0;
 	if((entity.a+180)%360 >= (spikes[spikeHitIndex].a-spikes[spikeHitIndex].off)%360 && (entity.a+180)%360 <= (spikes[spikeHitIndex].a+spikes[spikeHitIndex].off)%360) {
