@@ -141,20 +141,39 @@ function circleEntity(x,y,r,f,v,a) {
 
 function spike() {
 	this.orient = parseInt(Math.random() * 2);
-	if(spikes.length == 0) {
-		spikeAngTemp = calcSpikeSwitchDistanceAngle();
-		this.a = prevHoleAngle + spikeAngTemp;
-	}
-	else if(this.orient != spikes[spikes.length-1].orient) {
-		spikeAngTemp = calcSpikeSwitchDistanceAngle();
-		this.a = spikes[spikes.length-1].a + spikeAngTemp;
-	}
-	else if(this.orient == spikes[spikes.length-1].orient) {
-		spikeAngTemp = calcSpikeSameDistanceAngle(this.orient);
-		this.a = spikes[spikes.length-1].a + spikeAngTemp;
+	if(entity.v >= 0) {
+		if(spikes.length == 0) {
+			spikeAngTemp = calcSpikeSwitchDistanceAngle();
+			this.a = prevHoleAngle + spikeAngTemp;
+		}
+		else if(this.orient != spikes[spikes.length-1].orient) {
+			spikeAngTemp = calcSpikeSwitchDistanceAngle();
+			this.a = spikes[spikes.length-1].a + spikeAngTemp;
+		}
+		else if(this.orient == spikes[spikes.length-1].orient) {
+			spikeAngTemp = calcSpikeSameDistanceAngle(this.orient);
+			this.a = spikes[spikes.length-1].a + spikeAngTemp;
+		}
+		//this.a %= 360;
+	} else if(entity.v < 0) {
+		if(spikes.length == 0) {
+			spikeAngTemp = calcSpikeSwitchDistanceAngle();
+			this.a = prevHoleAngle - spikeAngTemp;
+		}
+		else if(this.orient != spikes[spikes.length-1].orient) {
+			spikeAngTemp = calcSpikeSwitchDistanceAngle();
+			this.a = spikes[spikes.length-1].a - spikeAngTemp;
+		}
+		else if(this.orient == spikes[spikes.length-1].orient) {
+			spikeAngTemp = calcSpikeSameDistanceAngle(this.orient);
+			this.a = spikes[spikes.length-1].a - spikeAngTemp;
+		}
+		//this.a %= 360;
+		//if(entity.a <= 0) {
+		//	entity.a = 360 + entity.a;
+		//}
 	}
 
-	this.a %= 360;
 	spikeTotalAngleCovered += spikeAngTemp;
 
 	if((spikeTotalAngleCovered+calcSpikeSwitchDistanceAngle()) >= 360)
@@ -460,7 +479,11 @@ function viewPort2() {
 
 	entity.v *= entity.friction;
 	entity.a += entity.v * ((initialRad+entity.rad)/(currentRad+entity.rad));
-	entity.a %= 360;
+	//entity.a %= 360;
+	//if(entity.v < 0 && entity.a <= 0) {
+	//	entity.a = 360 + entity.a;
+	//}
+
 	//viewPortX = gravityX + (currentRad+entity.rad) * Math.cos(entity.a * Math.PI/180);
 	//viewPortY = gravityY + (currentRad+entity.rad) * Math.sin(entity.a * Math.PI/180);
 
@@ -531,9 +554,40 @@ function deathCheck() {
 			entityDead();
 		}
 	}
-	if((entity.a+180)%360 > (spikes[spikeHitIndex].a+spikes[spikeHitIndex].off)%360 && canSwitchIndex != 0) {
-		spikeHitIndex++;
-		canSwitchIndex = 0;
+	if(entity.v > 0) {
+		if((entity.a+180)%360 > (spikes[spikeHitIndex].a+spikes[spikeHitIndex].off)%360 && canSwitchIndex != 0) {
+			spikeHitIndex++;
+			canSwitchIndex = 0;
+		}
+	} else {
+		if((entity.a+180)%360 < (spikes[spikeHitIndex].a-spikes[spikeHitIndex].off)%360 && canSwitchIndex != 0) {
+			spikeHitIndex++;
+			canSwitchIndex = 0;
+		}
+	}
+}
+
+function deathCheck2() {
+	if(spikeHitIndex >= spikes.length)
+		spikeHitIndex = 0;
+	if((entity.a+180) >= (spikes[spikeHitIndex].a-spikes[spikeHitIndex].off) && (entity.a+180) <= (spikes[spikeHitIndex].a+spikes[spikeHitIndex].off)) {
+		canSwitchIndex = 1;
+		if((currentRad<=(holeLoc+spacing/2) && spikes[spikeHitIndex].orient==0) || (currentRad>=(holeLoc+spacing/2) && spikes[spikeHitIndex].orient==1)) {
+			entityDead();
+		}
+	}
+	if(entity.v > 0) {
+		if((entity.a+180) > (spikes[spikeHitIndex].a+spikes[spikeHitIndex].off) && canSwitchIndex != 0) {
+			spikes[spikeHitIndex].a += 360;
+			spikeHitIndex++;
+			canSwitchIndex = 0;
+		}
+	} else {
+		if((entity.a+180) < (spikes[spikeHitIndex].a-spikes[spikeHitIndex].off) && canSwitchIndex != 0) {
+			spikes[spikeHitIndex].a -= 360;
+			spikeHitIndex++;
+			canSwitchIndex = 0;
+		}
 	}
 }
 
@@ -586,6 +640,7 @@ function genSpikes() {
 	spikeHitIndex = 0;
 	keepGenSpikes = 1;
 	spikeTotalAngleCovered = 0;
+	canSwitchIndex = 0;
 	spikes = [];
 	numSpikes = 0;
 	spikes.push(new spike());
@@ -619,7 +674,7 @@ function present() {
 		entityRender();
 		renderHole();
 		renderSpike();
-		deathCheck();
+		deathCheck2();
 		nextLevelCheck();
 	} else if(levelChange == 1) {
 		if(visibleRange >= 5) {
@@ -635,8 +690,8 @@ function present() {
 			currentRad = holeLoc + 2*spacing - 2*entity.rad;
 			createHole();
 			numSpikes += 5;
-			entity.a += 180;
-			prevHoleAngle = entity.a;
+			entity.a = (entity.a+180)%360;
+			prevHoleAngle = entity.a + 180;
 			genSpikes();
 			screenshots = [];
 		}
@@ -648,7 +703,7 @@ function present() {
 			entityRender();
 			renderHole();
 			renderSpike();
-			deathCheck();
+			deathCheck2();
 		} else {
 			visibleRange = 180;
 			levelChange = 0;
