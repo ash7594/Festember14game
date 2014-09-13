@@ -253,6 +253,13 @@ function screenshot() {
 	this.SholeX = holeX;
 	this.SholeY = holeY;
 	this.SholeLoc = holeLoc;
+	this.SholelX = holeD.poslX;
+	this.SholelY = holeD.poslY;
+	this.SholerX = holeD.posrX;
+	this.SholerY = holeD.posrY;
+	this.SholetX = holeD.tipX;
+	this.SholetY = holeD.tipY;
+
 	this.SviewPortX = viewPortX;
 	this.SviewPortY = viewPortY;
 	this.SscaleVal = scaleVal; 
@@ -279,6 +286,13 @@ function reviveScreenshot() {
 	entity.v = tempScreen.SentityV;
 	entity.a = tempScreen.SentityA;
 	
+	holeD.poslX = tempScreen.SholelX;
+	holeD.poslY = tempScreen.SholelY;
+	holeD.posrX = tempScreen.SholerX;
+	holeD.posrY = tempScreen.SholerY;
+	holeD.tipX = tempScreen.SholetX;
+	holeD.tipY = tempScreen.SholetY;
+
 	holeX = tempScreen.SholeX;
 	holeY = tempScreen.SholeY;
 	holeLoc = tempScreen.SholeLoc;
@@ -808,7 +822,7 @@ function past() {
 		ctx.fillRect(0,0,canvas.width,canvas.height);
 		renderBack2();
 		entityRender();
-		renderHole();
+		renderHole2();
 		renderSpike();
 		
 		screenshots.pop();
