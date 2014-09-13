@@ -230,7 +230,8 @@ function calcSpikeSameDistanceAngle(o) {
 	else if(o == 1) return (minSameArcSeparation/(holeLoc+spacing))*180/Math.PI;
 }
 
-function pastSpike(lx,ly,rx,ry,tx,ty) {
+function pastSpike(a,lx,ly,rx,ry,tx,ty) {
+	this.a = a;
 	this.lx = lx;
 	this.ly = ly;
 	this.rx = rx;
@@ -242,13 +243,16 @@ function pastSpike(lx,ly,rx,ry,tx,ty) {
 function screenshot() {
 	this.Sspikes = [];
 	for(var i=0;i<numSpikes;i++)
-		this.Sspikes.push(new pastSpike(spikes[i].poslX,spikes[i].poslY,spikes[i].posrX,spikes[i].posrY,spikes[i].tipX,spikes[i].tipY));
+		this.Sspikes.push(new pastSpike(spikes[i].a,spikes[i].poslX,spikes[i].poslY,spikes[i].posrX,spikes[i].posrY,spikes[i].tipX,spikes[i].tipY));
 
 	this.SentityPosX = entity.posX;
 	this.SentityPosY = entity.posY;
 	this.SentityRad = entity.rad;
 	this.SentityV = entity.v;
 	this.SentityA = entity.a;
+
+	this.SspikeHitIndex = spikeHitIndex;
+	this.ScanSwitchIndex = canSwitchIndex;
 	
 	this.SholeX = holeX;
 	this.SholeY = holeY;
@@ -272,6 +276,7 @@ function screenshot() {
 
 function reviveScreenshot() {
 	for(var i=0;i<numSpikes;i++) {
+		spikes[i].a = tempScreen.Sspikes[i].a;
 		spikes[i].poslX = tempScreen.Sspikes[i].lx;
 		spikes[i].poslY = tempScreen.Sspikes[i].ly;
 		spikes[i].posrX = tempScreen.Sspikes[i].rx;
@@ -286,6 +291,9 @@ function reviveScreenshot() {
 	entity.v = tempScreen.SentityV;
 	entity.a = tempScreen.SentityA;
 	
+	spikeHitIndex = tempScreen.SspikeHitIndex;
+	canSwitchIndex = tempScreen.ScanSwitchIndex;
+
 	holeD.poslX = tempScreen.SholelX;
 	holeD.poslY = tempScreen.SholelY;
 	holeD.posrX = tempScreen.SholerX;
