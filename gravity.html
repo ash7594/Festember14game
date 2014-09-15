@@ -48,7 +48,7 @@ var spacing = 100*scaleVal;
 var entity;
 var jumpToggle = -1;
 var acc = 0.5;
-var maxSpeed = 2;  //2.5
+var maxSpeed = 1.25;  //2.5
 var entityRad = 10*scaleVal;
 var entityIX = gravityX;
 var entityIY = gravityY;
@@ -79,8 +79,11 @@ var spikeAngTemp = 0;
 var keepGenSpikes = 0;
 var spikeTotalAngleCovered = 0;
 var minPosSeparation = 40; //
+
+var curArcSeparation = 300*scaleVal;
+var curSameArcSeparation = 200*scaleVal;
 var minArcSeparation = 100*scaleVal;  //75
-var minSameArcSeparation = 50*scaleVal;  //75
+var minSameArcSeparation = 30*scaleVal;  //75
 //////////////////
 var screenshots = [];
 var tempScreen;
@@ -262,12 +265,12 @@ function calcSpikeDistancePos(x1,y1,x2,y2) {
 }
 
 function calcSpikeSwitchDistanceAngle() {
-	return (minArcSeparation/(holeLoc))*180/Math.PI;
+	return ((Math.random()*(curArcSeparation-minArcSeparation)+minArcSeparation)/(holeLoc))*180/Math.PI;
 }
 
 function calcSpikeSameDistanceAngle(o) {
-	if(o == 0) return (minSameArcSeparation/(holeLoc))*180/Math.PI;
-	else if(o == 1) return (minSameArcSeparation/(holeLoc+spacing))*180/Math.PI;
+	if(o == 0) return ((Math.random()*(curSameArcSeparation-minSameArcSeparation)+minSameArcSeparation)/(holeLoc))*180/Math.PI;
+	else if(o == 1) return ((Math.random()*(curSameArcSeparation-minArcSeparation)+minSameArcSeparation)/(holeLoc+spacing))*180/Math.PI;
 }
 
 function pastSpike(a,lx,ly,rx,ry,tx,ty) {
@@ -502,8 +505,10 @@ function viewPort1() {
 function viewPort2() {
 	if(keys[90]) {              /////////// zoom out
 		if(scaleVal>0.5) {
-			//minSameArcSeparation /= scaleVal;
-			//minArcSeparation /= scaleVal;
+			curSameArcSeparation /= scaleVal;
+			curArcSeparation /= scaleVal;
+			minSameArcSeparation /= scaleVal;
+			minArcSeparation /= scaleVal;
 			currentRad /= scaleVal;
 			holeLoc /= scaleVal;
 			scaleVal -= 0.1;
@@ -513,18 +518,22 @@ function viewPort2() {
 			entity.rad = 10*scaleVal;
 			entityRad = 10*scaleVal;
 			
-			minArcSeparation = 100*scaleVal;
-			minSameArcSeparation = 50*scaleVal;
+			//minArcSeparation = 100*scaleVal;
+			//minSameArcSeparation = 50*scaleVal;
 
 			holeLoc *= scaleVal;
-			//minArcSeparation *= scaleVal;
-			//minSameArcSeparation *= scaleVal;
+			minArcSeparation *= scaleVal;
+			minSameArcSeparation *= scaleVal;
+			curArcSeparation *= scaleVal;
+			curSameArcSeparation *= scaleVal;
 		}
 	}
 	else if(keys[88]) {              /////////// zoom in
 		if(scaleVal<3) {
-			//minSameArcSeparation /= scaleVal;
-			//minArcSeparation /= scaleVal;
+			curSameArcSeparation /= scaleVal;
+			curArcSeparation /= scaleVal;
+			minSameArcSeparation /= scaleVal;
+			minArcSeparation /= scaleVal;
 			currentRad /= scaleVal;
 			holeLoc /= scaleVal;
 			scaleVal += 0.1;
@@ -534,12 +543,14 @@ function viewPort2() {
 			entity.rad = 10*scaleVal;
 			entityRad = 10*scaleVal;
 
-			minArcSeparation = 100*scaleVal;
-			minSameArcSeparation = 50*scaleVal;
+			//minArcSeparation = 100*scaleVal;
+			//minSameArcSeparation = 50*scaleVal;
 
 			holeLoc *= scaleVal;
-			//minArcSeparation *= scaleVal;
-			//minSameArcSeparation *= scaleVal;
+			minArcSeparation *= scaleVal;
+			minSameArcSeparation *= scaleVal;
+			curArcSeparation *= scaleVal;
+			curSameArcSeparation *= scaleVal;
 		}
 	}
 	if(keys[37]) {
@@ -685,7 +696,7 @@ function deathCheck2() {
 
 function entityDead() {
 	//clearInterval(gameInterval);
-	//isDead = 1;
+	isDead = 1;
 
 }
 
@@ -848,10 +859,27 @@ function present2() {
 		} else {*/
 			holeCreated = 0;
 			firstlevel--;
-			if(firstlevel <= -1)
+			if(firstlevel == -1) {
 				spikeCreationValue = 180;
-			else if(firstlevel <= -10)
+				maxSpeed = 1.5;
+				curArcSeparation = curArcSeparation - (curArcSeparation-minArcSeparation)/2;
+				curSameArcSeparation = curSameArcSeparation - (curSameArcSeparation-minSameArcSeparation)/2;
+			}
+
+			else if(firstlevel == -4) {
+				spikeCreationValue = 230;
+				maxSpeed = 1.75;
+				curArcSeparation = curArcSeparation - (curArcSeparation-minArcSeparation)/2;
+				curSameArcSeparation = curSameArcSeparation - (curSameArcSeparation-minSameArcSeparation)/2;
+			}
+
+			else if(firstlevel == -7) {
 				spikeCreationValue = 270;
+				maxSpeed = 2;
+				curArcSeparation = curArcSeparation - (curArcSeparation-minArcSeparation)/2;
+				curSameArcSeparation = curSameArcSeparation - (curSameArcSeparation-minSameArcSeparation)/2;
+			}
+
 			levelChange = 0;
 			directionChange();
 			//currentRad = holeLoc + spacing;
