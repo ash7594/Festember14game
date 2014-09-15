@@ -126,6 +126,8 @@ document.addEventListener("keydown", function (e) {
 document.addEventListener("keyup", function (e) {
     //console.log(e.keyCode);
     curTime = 1;
+    if(e.keyCode == 17)
+    	isDead = 0;
     keys[e.keyCode] = false;
 });
 
@@ -951,11 +953,11 @@ function gameState() {
 	//renderBackground();
 	//entityMoveAngular();
 	//entityMoveTranslation();
-	if(!keys[17] && isDead==0) present2();
-	else if(keys[17]) {
-		isDead = 0;
+	if(isDead==0) present2();
+	else if(keys[17] && isDead==1) {
 		past();
 	}
+
 	//gameFocus1();
 	//gameFocus2();
 	//gameFocus3();
