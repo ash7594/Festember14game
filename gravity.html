@@ -79,8 +79,8 @@ var spikeAngTemp = 0;
 var keepGenSpikes = 0;
 var spikeTotalAngleCovered = 0;
 var minPosSeparation = 40; //
-var minArcSeparation = 400;  //200
-var minSameArcSeparation = 150;  //75
+var minArcSeparation = 100*scaleVal;  //75
+var minSameArcSeparation = 50*scaleVal;  //75
 //////////////////
 var screenshots = [];
 var tempScreen;
@@ -285,6 +285,9 @@ function screenshot() {
 	for(var i=0;i<numSpikes;i++)
 		this.Sspikes.push(new pastSpike(spikes[i].a,spikes[i].poslX,spikes[i].poslY,spikes[i].posrX,spikes[i].posrY,spikes[i].tipX,spikes[i].tipY));
 
+	this.SminArcSeparation = minArcSeparation;
+	this.SminSameArcSeparation = minSameArcSeparation;
+
 	this.SentityPosX = entity.posX;
 	this.SentityPosY = entity.posY;
 	this.SentityRad = entity.rad;
@@ -324,6 +327,9 @@ function reviveScreenshot() {
 		spikes[i].tipX = tempScreen.Sspikes[i].tx;
 		spikes[i].tipY = tempScreen.Sspikes[i].ty;
 	}	
+
+	minArcSeparation = tempScreen.SminArcSeparation;
+	minSameArcSeparation = tempScreen.SminSameArcSeparation;
 	
 	entity.posX = tempScreen.SentityPosX;
 	entity.posY = tempScreen.SentityPosY;
@@ -496,8 +502,8 @@ function viewPort1() {
 function viewPort2() {
 	if(keys[90]) {              /////////// zoom out
 		if(scaleVal>0.5) {
-			minSameArcSeparation /= scaleVal;
-			minArcSeparation /= scaleVal;
+			//minSameArcSeparation /= scaleVal;
+			//minArcSeparation /= scaleVal;
 			currentRad /= scaleVal;
 			holeLoc /= scaleVal;
 			scaleVal -= 0.1;
@@ -506,15 +512,19 @@ function viewPort2() {
 			spacing = 100*scaleVal;
 			entity.rad = 10*scaleVal;
 			entityRad = 10*scaleVal;
+			
+			minArcSeparation = 100*scaleVal;
+			minSameArcSeparation = 50*scaleVal;
+
 			holeLoc *= scaleVal;
-			minArcSeparation *= scaleVal;
-			minSameArcSeparation *= scaleVal;
+			//minArcSeparation *= scaleVal;
+			//minSameArcSeparation *= scaleVal;
 		}
 	}
-	if(keys[88]) {              /////////// zoom in
+	else if(keys[88]) {              /////////// zoom in
 		if(scaleVal<3) {
-			minSameArcSeparation /= scaleVal;
-			minArcSeparation /= scaleVal;
+			//minSameArcSeparation /= scaleVal;
+			//minArcSeparation /= scaleVal;
 			currentRad /= scaleVal;
 			holeLoc /= scaleVal;
 			scaleVal += 0.1;
@@ -523,9 +533,13 @@ function viewPort2() {
 			spacing = 100*scaleVal;
 			entity.rad = 10*scaleVal;
 			entityRad = 10*scaleVal;
+
+			minArcSeparation = 100*scaleVal;
+			minSameArcSeparation = 50*scaleVal;
+
 			holeLoc *= scaleVal;
-			minArcSeparation *= scaleVal;
-			minSameArcSeparation *= scaleVal;
+			//minArcSeparation *= scaleVal;
+			//minSameArcSeparation *= scaleVal;
 		}
 	}
 	if(keys[37]) {
@@ -671,7 +685,7 @@ function deathCheck2() {
 
 function entityDead() {
 	//clearInterval(gameInterval);
-	isDead = 1;
+	//isDead = 1;
 
 }
 
