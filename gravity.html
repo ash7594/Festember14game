@@ -234,7 +234,7 @@ function spike() {
 
 	spikeTotalAngleCovered += spikeAngTemp;
 
-	if((spikeTotalAngleCovered+calcSpikeSwitchDistanceAngle()) >= 360)
+	if((spikeTotalAngleCovered+giveMaxCovered()) >= 360)
 		keepGenSpikes = 0;
 
 	if(this.orient == 0) {
@@ -270,7 +270,11 @@ function calcSpikeSwitchDistanceAngle() {
 
 function calcSpikeSameDistanceAngle(o) {
 	if(o == 0) return ((Math.random()*(curSameArcSeparation-minSameArcSeparation)+minSameArcSeparation)/(holeLoc))*180/Math.PI;
-	else if(o == 1) return ((Math.random()*(curSameArcSeparation-minArcSeparation)+minSameArcSeparation)/(holeLoc+spacing))*180/Math.PI;
+	else if(o == 1) return ((Math.random()*(curSameArcSeparation-minSameArcSeparation)+minSameArcSeparation)/(holeLoc+spacing))*180/Math.PI;
+}
+
+function giveMaxCovered() {
+	return (curArcSeparation/(holeLoc))*180/Math.PI;	
 }
 
 function pastSpike(a,lx,ly,rx,ry,tx,ty) {
@@ -290,6 +294,8 @@ function screenshot() {
 
 	this.SminArcSeparation = minArcSeparation;
 	this.SminSameArcSeparation = minSameArcSeparation;
+	this.ScurArcSeparation = curArcSeparation;
+	this.ScurSameArcSeparation = curSameArcSeparation;
 
 	this.SentityPosX = entity.posX;
 	this.SentityPosY = entity.posY;
@@ -333,6 +339,8 @@ function reviveScreenshot() {
 
 	minArcSeparation = tempScreen.SminArcSeparation;
 	minSameArcSeparation = tempScreen.SminSameArcSeparation;
+	curArcSeparation = tempScreen.ScurArcSeparation;
+	curSameArcSeparation = tempScreen.ScurSameArcSeparation;
 	
 	entity.posX = tempScreen.SentityPosX;
 	entity.posY = tempScreen.SentityPosY;
