@@ -131,7 +131,8 @@ document.addEventListener("keyup", function (e) {
     curTime = 1;
     if(e.keyCode == 17)
     	isDead = 0;
-    keys[e.keyCode] = false;
+    if(e.keyCode != 37 && e.keyCode != 39)
+    	keys[e.keyCode] = false;
 });
 
 document.addEventListener("click",startGame);
