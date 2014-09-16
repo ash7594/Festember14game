@@ -98,6 +98,7 @@ var isDead = 0;
 var startonce = 0;
 var firstlevel = 1;
 var AchievedScore = 0;
+var pastUses = 0;
 //////////////////
 
 document.addEventListener("keydown", function (e) {
@@ -298,6 +299,7 @@ function resetVars() {
 	startonce = 0;
 	firstlevel = 1;
 	AchievedScore = 0;
+	pastUses = 0;
 }
 
 function renderBackground() {
@@ -874,9 +876,18 @@ function deathCheck2() {
 }
 
 function entityDead() {
-	//clearInterval(gameInterval);
+	pastUses++;
 	isDead = 1;
+	if(pastUses == 5) {
+		clearInterval(gameInterval);
+		gameOver();
+	}
+}
 
+function gameOver() {
+	ctx.clearRect(0,0,canvas.width,canvas.height);
+	document.addEventListener("click",startGame);
+	entryScreen2();
 }
 
 function createHole() {
@@ -1059,6 +1070,7 @@ function present2() {
 				curSameArcSeparation = curSameArcSeparation - (curSameArcSeparation-minSameArcSeparation)/2;
 			}
 
+			AchievedScore++;
 			levelChange = 0;
 			directionChange();
 			//currentRad = holeLoc + spacing;
@@ -1135,6 +1147,7 @@ function gameState() {
 
 function startGame() {
 	//console.log("yo");
+	resetVars();
 	document.removeEventListener("click",startGame);
 	startonce = 1;
     keys[39] = true;
@@ -1147,7 +1160,7 @@ function startGame() {
 //entityRender();
 //gameState();
 
-entryScreen2();
+entryScreen1();
 
 </script>
 </body>
