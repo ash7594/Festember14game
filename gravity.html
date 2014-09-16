@@ -97,21 +97,23 @@ var canSwitchIndex = 0;
 var isDead = 0;
 var startonce = 0;
 var firstlevel = 1;
+var AchievedScore = 0;
 //////////////////
 
 document.addEventListener("keydown", function (e) {
     //console.log(e.keyCode);
     //////////
     //////////
-    if(e.keyCode == 65 && startonce==0) {
+    /*if(e.keyCode == 65 && startonce==0) {
     	startonce = 1;
     	keys[39] = true;
-    	gameInterval = setInterval(gameState,17);
+    	//resetVars();
+    	startGame();
     	//gameState();
-    }
+    }*/
     //////////
     //////////
-    else if(e.keyCode == 32) {
+    if(e.keyCode == 32) {
     	if(jumpToggle == -1) {
     		jumpToggle = 1;
     	} else if(jumpToggle == 2) {
@@ -130,6 +132,173 @@ document.addEventListener("keyup", function (e) {
     	isDead = 0;
     keys[e.keyCode] = false;
 });
+
+document.addEventListener("click",startGame);
+
+function entryScreen1() {
+	////////
+	ctx.font=canvas.width/12.3 + "px Courier New";
+	var gradient=ctx.createLinearGradient(canvas.width/2 - canvas.width/5.9,0,canvas.width/2 + canvas.width/5.9,0);
+	gradient.addColorStop("0","green");
+	gradient.addColorStop("0.5","white");
+	gradient.addColorStop("1.0","green");
+	ctx.fillStyle=gradient;
+	ctx.fillText("GRAVITY",canvas.width/2 - canvas.width/5.9,150);
+	////////
+	ctx.font=canvas.width/61.5 + "px Courier New";
+	var gradient=ctx.createLinearGradient(canvas.width/2 - canvas.width/5.9,0,canvas.width/2 + canvas.width/5.9,0);
+	gradient.addColorStop("0","green");
+	gradient.addColorStop("0.5","white");
+	gradient.addColorStop("1.0","green");
+	ctx.fillStyle=gradient;
+	ctx.fillText("[SPACE] - Toggle Entity",canvas.width/2 - canvas.width/8.5,250);
+	////////
+	ctx.font=canvas.width/61.5 + "px Courier New";
+	var gradient=ctx.createLinearGradient(canvas.width/2 - canvas.width/5.9,0,canvas.width/2 + canvas.width/5.9,0);
+	gradient.addColorStop("0","green");
+	gradient.addColorStop("0.5","white");
+	gradient.addColorStop("1.0","green");
+	ctx.fillStyle=gradient;
+	ctx.fillText("[Z/X] - Zoom In/Out",canvas.width/2 - canvas.width/10.25,300);
+	////////
+	ctx.font=canvas.width/61.5 + "px Courier New";
+	var gradient=ctx.createLinearGradient(canvas.width/2 - canvas.width/5.9,0,canvas.width/2 + canvas.width/5.9,0);
+	gradient.addColorStop("0","green");
+	gradient.addColorStop("0.5","white");
+	gradient.addColorStop("1.0","green");
+	ctx.fillStyle=gradient;
+	ctx.fillText("[CTRL] - Go Into PAST On Death",canvas.width/2 - canvas.width/6.6,350);
+	////////
+	ctx.font=canvas.width/24.6 + "px Courier New";
+	var gradient=ctx.createLinearGradient(canvas.width/2 - canvas.width/5.9,0,canvas.width/2 + canvas.width/5.9,0);
+	gradient.addColorStop("0","green");
+	gradient.addColorStop("0.5","white");
+	gradient.addColorStop("1.0","green");
+	ctx.fillStyle=gradient;
+	ctx.fillText("CLICK TO START",canvas.width/2 - canvas.width/5.8,450);
+	////////
+}
+
+function entryScreen2() {
+	
+	var tempValue = 19;
+	if(AchievedScore > 9)
+		tempValue = 11;
+
+	ctx.font=canvas.width/6.1 + "px Courier New";
+	var gradient=ctx.createLinearGradient(canvas.width/2 - canvas.width/5.9,0,canvas.width/2 + canvas.width/5.9,0);
+	gradient.addColorStop("0","green");
+	gradient.addColorStop("0.5","white");
+	gradient.addColorStop("1.0","green");
+	ctx.fillStyle=gradient;
+	ctx.fillText(AchievedScore,canvas.width/2 - canvas.width/tempValue,150);
+	////////
+	ctx.font=canvas.width/12.3 + "px Courier New";
+	var gradient=ctx.createLinearGradient(canvas.width/2 - canvas.width/5.9,0,canvas.width/2 + canvas.width/5.9,0);
+	gradient.addColorStop("0","green");
+	gradient.addColorStop("0.5","white");
+	gradient.addColorStop("1.0","green");
+	ctx.fillStyle=gradient;
+	ctx.fillText("GRAVITY",canvas.width/2 - canvas.width/5.9,250);
+	////////
+	ctx.font=canvas.width/61.5 + "px Courier New";
+	var gradient=ctx.createLinearGradient(canvas.width/2 - canvas.width/5.9,0,canvas.width/2 + canvas.width/5.9,0);
+	gradient.addColorStop("0","green");
+	gradient.addColorStop("0.5","white");
+	gradient.addColorStop("1.0","green");
+	ctx.fillStyle=gradient;
+	ctx.fillText("[SPACE] - Toggle Entity",canvas.width/2 - canvas.width/8.5,350);
+	////////
+	ctx.font=canvas.width/61.5 + "px Courier New";
+	var gradient=ctx.createLinearGradient(canvas.width/2 - canvas.width/5.9,0,canvas.width/2 + canvas.width/5.9,0);
+	gradient.addColorStop("0","green");
+	gradient.addColorStop("0.5","white");
+	gradient.addColorStop("1.0","green");
+	ctx.fillStyle=gradient;
+	ctx.fillText("[Z/X] - Zoom In/Out",canvas.width/2 - canvas.width/10.25,400);
+	////////
+	ctx.font=canvas.width/61.5 + "px Courier New";
+	var gradient=ctx.createLinearGradient(canvas.width/2 - canvas.width/5.9,0,canvas.width/2 + canvas.width/5.9,0);
+	gradient.addColorStop("0","green");
+	gradient.addColorStop("0.5","white");
+	gradient.addColorStop("1.0","green");
+	ctx.fillStyle=gradient;
+	ctx.fillText("[CTRL] - Go Into PAST On Death",canvas.width/2 - canvas.width/6.6,450);
+	////////
+	ctx.font=canvas.width/24.6 + "px Courier New";
+	var gradient=ctx.createLinearGradient(canvas.width/2 - canvas.width/5.9,0,canvas.width/2 + canvas.width/5.9,0);
+	gradient.addColorStop("0","green");
+	gradient.addColorStop("0.5","white");
+	gradient.addColorStop("1.0","green");
+	ctx.fillStyle=gradient;
+	ctx.fillText("CLICK TO START",canvas.width/2 - canvas.width/5.8,550);
+	////////
+}
+
+function resetVars() {
+	canvas.width = window.innerWidth * 0.9;
+	canvas.height = window.innerHeight * 0.9;
+	canvas.style.left = (window.innerWidth-canvas.width)/2;
+	canvas.style.top = (window.innerHeight-canvas.height)/2;
+
+//////////////////
+	visibleRange = 180;
+	scaleVal = 2;
+	gravityX = canvas.width/2;
+	gravityY = canvas.height/2;
+	initialRad = 150*scaleVal;	
+	spacing = 100*scaleVal;
+//////////////////
+	jumpToggle = -1;
+	acc = 0.5;
+	maxSpeed = 1.25;  //2.5
+	entityRad = 10*scaleVal;
+	entityIX = gravityX;
+	entityIY = gravityY;
+//var entityIY = gravityY - initialRad - entityRad;
+//////////////////
+	currentRad = initialRad;
+//////////////////
+	keys = [];
+	numRings = 3;
+//////////////////
+	viewPortX = gravityX;
+	viewPortY = gravityY - initialRad - entityRad;
+//////////////////
+	holeCreated = 0;
+	holeAngle = Math.random()*360;
+	prevHoleAngle = 90+180;
+	holeX = 0;
+	holeY = 0;
+	holeLoc = initialRad;
+//////////////////
+	levelChange = 0;
+//////////////////
+	spikes = [];
+	numSpikes = 5;
+	spikeAngTemp = 0;
+	keepGenSpikes = 0;
+	spikeTotalAngleCovered = 0;
+	minPosSeparation = 40; //
+
+	curArcSeparation = 300*scaleVal;
+	curSameArcSeparation = 200*scaleVal;
+	minArcSeparation = 100*scaleVal;  //75
+	minSameArcSeparation = 30*scaleVal;  //75
+//////////////////
+	screenshots = [];
+	timeDelay = 1;
+	curTime = 1;
+//////////////////
+//Death vars
+	spikeCreationValue = 90;
+	spikeHitIndex = 0;
+	canSwitchIndex = 0;
+	isDead = 0;
+	startonce = 0;
+	firstlevel = 1;
+	AchievedScore = 0;
+}
 
 function renderBackground() {
 	var iniRad = initialRad;
@@ -964,12 +1133,21 @@ function gameState() {
 	//setTimeout(function(){gameState();},34);
 }
 
+function startGame() {
+	//console.log("yo");
+	document.removeEventListener("click",startGame);
+	startonce = 1;
+    keys[39] = true;
 
-entitySpawn();
-genSpikes();
-holeD = new holeDef();
+	entitySpawn();
+	genSpikes();
+	holeD = new holeDef();
+	gameInterval = setInterval(gameState,17);
+}
 //entityRender();
 //gameState();
+
+entryScreen2();
 
 </script>
 </body>
