@@ -28,6 +28,7 @@ body{
  
 <script>
 
+(function(){
 var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
 
@@ -886,6 +887,11 @@ function entityDead() {
 }
 
 function gameOver() {
+
+	///////
+	FBShareOp();
+	//////
+
 	ctx.clearRect(0,0,canvas.width,canvas.height);
 	document.addEventListener("click",startGame);
 	entryScreen2();
@@ -1161,7 +1167,55 @@ function startGame() {
 //entityRender();
 //gameState();
 
+//////////////////////////////////////////////////////////
+//////////////FB INTEGRATION//////////////////////////////
+
+window.fbAsyncInit = function() {
+    // init the FB JS SDK
+    FB.init({
+      appId      : '761597007233104',                            
+      status     : true,                                 
+      xfbml      : true                                  
+    });
+
+  };
+
+  // Load the SDK asynchronously
+  (function(d, s, id){
+     var js, fjs = d.getElementsByTagName(s)[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement(s); js.id = id;
+     js.src = "//connect.facebook.net/en_US/all.js";
+     fjs.parentNode.insertBefore(js, fjs);
+   }(document, 'script', 'facebook-jssdk'));
+
+function FBShareOp(){
+	var product_name   = 	'Gravity';
+	var description	   =	'Boldly going where no man has gone before...Including the Past';
+	var share_image	   =	'';
+	var share_url	   =	'https://festember.com/14';	
+        var share_capt     =    'Try to beat my score'+ AchievedScore;
+    FB.ui({
+        method: 'feed',
+        name: product_name,
+        link: share_url,
+        picture: share_image,
+        caption: share_capt,
+        description: description
+
+    }, function(response) {
+        if(response && response.post_id){}
+        else{}
+    });
+
+}
+
+
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+
 entryScreen1();
+})();
 
 </script>
 </body>
